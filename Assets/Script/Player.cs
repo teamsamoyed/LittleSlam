@@ -5,7 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public bool IsPossessed;
-    Rigidbody2D Body;
+    Rigidbody Body;
     public int Index;
     public float Hp;
     public float Speed;
@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
 	// Use this for initialization
 	void Start ()
     {
-        Body = GetComponent<Rigidbody2D>();
+        Body = GetComponent<Rigidbody>();
 	}
 	
 	// Update is called once per frame
@@ -32,16 +32,16 @@ public class Player : MonoBehaviour
 
     void Control()
     {
-        var velocity = new Vector2(0.0f, 0.0f);
+        var velocity = new Vector3(0.0f, 0.0f);
 
         if (Input.GetButton(Key.Up(Index)))
         {
-            velocity.y = 1.0f;
+            velocity.z = 1.0f;
         }
 
         if (Input.GetButton(Key.Down(Index)))
         {
-            velocity.y = -1.0f;
+            velocity.z = -1.0f;
         }
 
         if (Input.GetButton(Key.Left(Index)))
