@@ -35,4 +35,20 @@ public class Key
         else
             return "Down2";
     }
+
+    public static string Jump(int UserIdx)
+    {
+        if (UserIdx == 0)
+            return "Jump1";
+        else
+            return "Jump2";
+    }
+
+    public static string TabPlayer(int UserIdx)
+    {
+        if (UserIdx == 0)
+            return "Tab1";
+        else
+            return "Tab2";
+    }
 }

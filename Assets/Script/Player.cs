@@ -7,9 +7,10 @@ public class Player : MonoBehaviour
     public bool IsPossessed;
     Rigidbody Body;
     public int Index;
+    public int Team;
     public float Hp;
     public float Speed;
-    public float DashSpeed;
+    public float Jump;
 
 	// Use this for initialization
 	void Start ()
@@ -58,6 +59,11 @@ public class Player : MonoBehaviour
         {
             velocity.Normalize();
             velocity *= Speed;
+        }
+
+        if (Input.GetButtonDown(Key.Jump(Index)))
+        {
+            velocity.y += Jump;
         }
 
         Body.velocity = velocity;
