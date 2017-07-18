@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ball : MonoBehaviour {
+public class Ball : MonoBehaviour
+{
+    Rigidbody Body;
 
 	// Use this for initialization
-	void Start () {
-		
+	void Start ()
+    {
+        Body = GetComponent<Rigidbody>();
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		
+	void Update ()
+    {
 	}
 }
