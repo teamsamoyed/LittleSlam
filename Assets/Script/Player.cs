@@ -69,6 +69,10 @@ public class Player : MonoBehaviour
         }
 
         Body.velocity = velocity;
+
+        if (Input.GetButtonDown(Key.Pass(Index)))
+        {
+        }
     }
 
     void AutoMove()

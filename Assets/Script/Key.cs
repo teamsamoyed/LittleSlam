@@ -51,4 +51,12 @@ public class Key
         else
             return "Tab2";
     }
+
+    public static string Pass(int UserIdx)
+    {
+        if (UserIdx == 0)
+            return "Pass1";
+        else
+            return "Pass2";
+    }
 }
