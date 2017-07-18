@@ -39,8 +39,10 @@ public class Player : MonoBehaviour
     {
         Move();
 
-        if (Input.GetButtonDown(Key.Pass(Index)))
+        if (Input.GetButtonDown(Key.Pass(Index)) &&
+            Ball.GetComponent<Ball>().Owner == gameObject)
         {
+            Pass();
         }
     }
 
@@ -128,5 +130,61 @@ public class Player : MonoBehaviour
         //ball 소유하기
         Ball.GetComponent<Ball>().Owner = gameObject;
         Ball.SetActive(false);
+
+        if (!IsPossessed)
+        {
+            var players = GameObject.FindGameObjectsWithTag(Tags.Player);
+
+            foreach (var player in players)
+            {
+                if (player.GetComponent<Player>().Team != Team)
+                {
+                    continue;
+                }
+
+                player.GetComponent<Player>().IsPossessed = false;
+            }
+
+            IsPossessed = true;
+        }
+    }
+
+    void Pass()
+    {
+        Ball.SetActive(true);
+
+        var direction = GetPassDirection();
+        Ball.GetComponent<Rigidbody>().velocity = direction;
+
+        direction.Normalize();
+        var ballPosition = transform.position + direction * 0.2f;
+        Ball.transform.position = ballPosition;
+
+        Ball.GetComponent<Ball>().Owner = null;
+    }
+
+    Vector3 GetPassDirection()
+    {
+        var players = GameObject.FindGameObjectsWithTag(Tags.Player);
+
+        foreach (var player in players)
+        {
+            if (player == gameObject ||
+                player.GetComponent<Player>().Team != Team)
+            {
+                continue;
+            }
+
+            IsPossessed = false;
+            player.GetComponent<Player>().IsPossessed = true;
+
+            var vel = player.transform.position - transform.position;
+            vel *= 2.0f;
+            vel.y += vel.magnitude * 0.5f;
+
+            return vel;
+        }
+
+        return Vector3.zero;
     }
 }
