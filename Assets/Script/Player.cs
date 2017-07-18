@@ -48,11 +48,13 @@ public class Player : MonoBehaviour
         if (Input.GetButton(Key.Left(Index)))
         {
             velocity.x = -1.0f;
+            GetComponent<SpriteRenderer>().flipX = false;
         }
 
         if (Input.GetButton(Key.Right(Index)))
         {
             velocity.x = 1.0f;
+            GetComponent<SpriteRenderer>().flipX = true;
         }
 
         if (velocity.x != 0.0f || velocity.y != 0.0f)
