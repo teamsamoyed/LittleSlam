@@ -7,6 +7,8 @@ public class BasketCamera : MonoBehaviour
     public GameObject Ball;
     public float YCut; //이거보다 공이 y축으로 높이 올라가면 따라 올름
     float StartY;
+    public float MinX;
+    public float MaxX;
 
 	// Use this for initialization
 	void Start ()
@@ -28,7 +30,7 @@ public class BasketCamera : MonoBehaviour
         var newPosition = transform.position;
         var follower = GetFollower();
 
-        newPosition.x = follower.transform.position.x;
+        newPosition.x = Mathf.Clamp(follower.transform.position.x, MinX, MaxX);
 
         if (follower.transform.position.y > YCut)
         {

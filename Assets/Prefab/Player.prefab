@@ -85,8 +85,8 @@ MonoBehaviour:
   Index: 0
   Team: 0
   Hp: 0
-  Speed: 2
-  Jump: 1
+  Speed: 1
+  Jump: 4
 --- !u!212 &212659650465698090
 SpriteRenderer:
   m_ObjectHideFlags: 1
