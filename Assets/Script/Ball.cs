@@ -5,6 +5,7 @@ using UnityEngine;
 public class Ball : MonoBehaviour
 {
     Rigidbody Body;
+    public GameObject Owner;
 
 	// Use this for initialization
 	void Start ()

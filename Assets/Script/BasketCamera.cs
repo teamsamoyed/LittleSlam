@@ -13,17 +13,26 @@ public class BasketCamera : MonoBehaviour
     {
         StartY = transform.position.y;
 	}
+
+    GameObject GetFollower()
+    {
+        if (Ball.activeSelf)
+            return Ball;
+        else
+            return Ball.GetComponent<Ball>().Owner;
+    }
 	
 	// Update is called once per frame
 	void LateUpdate ()
     {
         var newPosition = transform.position;
+        var follower = GetFollower();
 
-        newPosition.x = Ball.transform.position.x;
+        newPosition.x = follower.transform.position.x;
 
-        if (Ball.transform.position.y > YCut)
+        if (follower.transform.position.y > YCut)
         {
-            newPosition.y = StartY + Ball.transform.position.y - YCut;
+            newPosition.y = StartY + follower.transform.position.y - YCut;
         }
         else
         {

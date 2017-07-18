@@ -12,12 +12,14 @@ public class Player : MonoBehaviour
     public float Hp;
     public float Speed;
     public float Jump;
+    GameObject Ball;
 
 	// Use this for initialization
 	void Start ()
     {
         Body = GetComponent<Rigidbody>();
         Collider = GetComponent<BoxCollider>();
+        Ball = GameObject.FindGameObjectWithTag(Tags.Ball);
 	}
 	
 	// Update is called once per frame
@@ -78,7 +80,7 @@ public class Player : MonoBehaviour
             velocity *= Speed;
         }
 
-        if (transform.position.y == 0.0f &&
+        if (transform.position.y <= -0.01f &&
             Input.GetButtonDown(Key.Jump(Index)))
         {
             velocity.y += Jump;
@@ -103,6 +105,9 @@ public class Player : MonoBehaviour
             if (o.gameObject == gameObject)
                 continue;
 
+            if (o.gameObject == Ball)
+                continue;
+
             return false;
         }
 
@@ -111,5 +116,17 @@ public class Player : MonoBehaviour
 
     void AutoMove()
     {
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject != Ball)
+        {
+            return;
+        }
+
+        //ball 소유하기
+        Ball.GetComponent<Ball>().Owner = gameObject;
+        Ball.SetActive(false);
     }
 }
