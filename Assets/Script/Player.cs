@@ -13,12 +13,14 @@ public class Player : MonoBehaviour
     public float Speed;
     public float Jump;
     GameObject Ball;
+    Animator Ani;
 
 	// Use this for initialization
 	void Start ()
     {
         Body = GetComponent<Rigidbody>();
         Collider = GetComponent<BoxCollider>();
+        Ani = GetComponent<Animator>();
         Ball = GameObject.FindGameObjectWithTag(Tags.Ball);
 	}
 	
@@ -66,14 +68,14 @@ public class Player : MonoBehaviour
             CanMove(new Vector3(-1.0f, 0.0f, 0.0f)))
         {
             velocity.x = -1.0f;
-            GetComponent<SpriteRenderer>().flipX = false;
+            GetComponent<SpriteRenderer>().flipX = true;
         }
 
         if (Input.GetButton(Key.Right(Index)) &&
             CanMove(new Vector3(1.0f, 0.0f, 0.0f)))
         {
             velocity.x = 1.0f;
-            GetComponent<SpriteRenderer>().flipX = true;
+            GetComponent<SpriteRenderer>().flipX = false;
         }
 
         if (velocity.x != 0.0f || velocity.y != 0.0f)
@@ -87,6 +89,11 @@ public class Player : MonoBehaviour
         {
             velocity.y += Jump;
         }
+
+        if (velocity != Vector3.zero && transform.position.y <= -0.01f)
+            Ani.SetBool("Running", true);
+        else
+            Ani.SetBool("Running", false);
 
         Body.velocity = velocity;
     }
