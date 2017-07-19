@@ -59,4 +59,12 @@ public class Key
         else
             return "Pass2";
     }
+
+    public static string Shoot(int UserIdx)
+    {
+        if (UserIdx == 0)
+            return "Shoot1";
+        else
+            return "Shoot2";
+    }
 }
