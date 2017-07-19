@@ -2,6 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+enum PlayerState
+{
+    Move,
+    Shoot,
+}
+
 public class Player : MonoBehaviour
 {
     public bool IsPossessed;
@@ -24,6 +30,13 @@ public class Player : MonoBehaviour
     public float MaxPassDegree;
     public float DefaultPassSpeed;
     public float MaxPassSpeed;
+    public float ShootMaxHoldTime;
+
+    float ShootHoldTime;
+    bool WaitShootRelease;
+    bool IsShootMotionEnded;
+
+    PlayerState State = PlayerState.Move;
 
 	// Use this for initialization
 	void Start ()
@@ -34,10 +47,18 @@ public class Player : MonoBehaviour
         Ball = GameObject.FindGameObjectWithTag(Tags.Ball);
         Floor = GameObject.FindGameObjectWithTag(Tags.Floor);
 	}
+
+    void ReadyShoot()
+    {
+        Body.AddForce(0.0f, Jump, 0.0f);
+        IsShootMotionEnded = true;
+    }
 	
 	// Update is called once per frame
 	void Update ()
     {
+        Ani.SetBool("Landing", IsLanded);
+
         if (BlockInput)
         {
             BlockTime -= Time.deltaTime;
@@ -63,12 +84,67 @@ public class Player : MonoBehaviour
 
     void Control()
     {
+        switch (State)
+        {
+            case PlayerState.Move:
+                MoveControl();
+                break;
+            case PlayerState.Shoot:
+                ShootControl();
+                break;
+        }
+    }
+
+    void MoveControl()
+    {
         Move();
 
-        if (Input.GetButtonDown(Key.Pass(Index)) &&
-            Ball.GetComponent<Ball>().Owner == gameObject)
+        if (Ball.GetComponent<Ball>().Owner == gameObject)
         {
-            Pass();
+            if (Input.GetButtonDown(Key.Pass(Index)))
+            {
+                Pass();
+            }
+
+            if (Input.GetButtonDown(Key.Shoot(Index)))
+            {
+                State = PlayerState.Shoot;
+                Ani.ResetTrigger("Shoot");
+                Ani.ResetTrigger("ShootEnd");
+                Ani.SetTrigger("Shoot");
+                WaitShootRelease = true;
+                IsShootMotionEnded = false;
+                ShootHoldTime = 0.0f;
+            }
+        }
+    }
+
+    void ShootImpulse()
+    {
+        Debug.Log("SHOOT");
+    }
+
+    void ShootControl()
+    {
+        if (Input.GetButtonUp(Key.Shoot(Index)))
+        {
+            WaitShootRelease = false;
+        }
+
+        ShootHoldTime += Time.deltaTime;
+
+        if (ShootHoldTime > ShootMaxHoldTime)
+            WaitShootRelease = false;
+
+        if (IsShootMotionEnded && !WaitShootRelease)
+        {
+            //공 발사
+            Ani.SetTrigger("ShootEnd");
+
+            if (IsLanded)
+            {
+                State = PlayerState.Move;
+            }
         }
     }
 
