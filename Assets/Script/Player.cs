@@ -61,6 +61,7 @@ public class Player : MonoBehaviour
 	void Update ()
     {
         Ani.SetBool("Landing", IsLanded);
+        Ani.SetBool("OwnBall", Ball.GetComponent<Ball>().Owner == gameObject);
 
         if (BlockInput)
         {
