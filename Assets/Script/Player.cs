@@ -12,8 +12,18 @@ public class Player : MonoBehaviour
     public float Hp;
     public float Speed;
     public float Jump;
+    public float PassTime;
     GameObject Ball;
+    GameObject Floor;
     Animator Ani;
+    bool IsLanded = true;
+    bool BlockInput = false;
+    float BlockTime = 0.0f;
+    //보는 방향에서 이 각도 안 쪽일 때만 그 선수 겨냥해서 패스
+    //그 외의 경우 그냥 해당 방향 직선으로 쏴버린다
+    public float MaxPassDegree;
+    public float DefaultPassSpeed;
+    public float MaxPassSpeed;
 
 	// Use this for initialization
 	void Start ()
@@ -22,11 +32,25 @@ public class Player : MonoBehaviour
         Collider = GetComponent<BoxCollider>();
         Ani = GetComponent<Animator>();
         Ball = GameObject.FindGameObjectWithTag(Tags.Ball);
+        Floor = GameObject.FindGameObjectWithTag(Tags.Floor);
 	}
 	
 	// Update is called once per frame
 	void Update ()
     {
+        if (BlockInput)
+        {
+            BlockTime -= Time.deltaTime;
+            if (BlockTime <= 0.0f)
+            {
+                BlockInput = false;
+            }
+            else
+            {
+                return;
+            }
+        }
+
         if (IsPossessed)
         {
             Control();
@@ -50,44 +74,21 @@ public class Player : MonoBehaviour
 
     void Move()
     {
-        var velocity = new Vector3(0.0f, 0.0f);
+        if (!IsLanded)
+            return;
 
-        if (Input.GetButton(Key.Up(Index)) &&
-            CanMove(new Vector3( 0.0f,0.0f,1.0f)))
-        {
-            velocity.z = 1.0f;
-        }
+        var velocity = GetInputDirection();
 
-        if (Input.GetButton(Key.Down(Index)) &&
-            CanMove(new Vector3(0.0f, 0.0f, -1.0f)))
+        if (velocity.sqrMagnitude > 0.0f)
         {
-            velocity.z = -1.0f;
-        }
-
-        if (Input.GetButton(Key.Left(Index)) &&
-            CanMove(new Vector3(-1.0f, 0.0f, 0.0f)))
-        {
-            velocity.x = -1.0f;
-            GetComponent<SpriteRenderer>().flipX = true;
-        }
-
-        if (Input.GetButton(Key.Right(Index)) &&
-            CanMove(new Vector3(1.0f, 0.0f, 0.0f)))
-        {
-            velocity.x = 1.0f;
-            GetComponent<SpriteRenderer>().flipX = false;
-        }
-
-        if (velocity.x != 0.0f || velocity.y != 0.0f)
-        {
-            velocity.Normalize();
-            velocity *= Speed;
-        }
-
-        if (transform.position.y <= -0.01f &&
-            Input.GetButtonDown(Key.Jump(Index)))
-        {
-            velocity.y += Jump;
+            if (velocity.x < 0.0f)
+            {
+                GetComponent<SpriteRenderer>().flipX = true;
+            }
+            else if(velocity.x > 0.0f)
+            {
+                GetComponent<SpriteRenderer>().flipX = false;
+            }
         }
 
         if (velocity != Vector3.zero && transform.position.y <= -0.01f)
@@ -95,7 +96,40 @@ public class Player : MonoBehaviour
         else
             Ani.SetBool("Running", false);
 
-        Body.velocity = velocity;
+        if (CanMove(velocity))
+        {
+            transform.Translate(Time.deltaTime * velocity * Speed);
+        }
+    }
+
+    Vector3 GetInputDirection()
+    {
+        var velocity = new Vector3(0.0f, 0.0f, 0.0f);
+
+        if (Input.GetButton(Key.Up(Index)))
+        {
+            velocity.z = 1.0f;
+        }
+
+        if (Input.GetButton(Key.Down(Index)))
+        {
+            velocity.z = -1.0f;
+        }
+
+        if (Input.GetButton(Key.Left(Index)))
+        {
+            velocity.x = -1.0f;
+        }
+
+        if (Input.GetButton(Key.Right(Index)))
+        {
+            velocity.x = 1.0f;
+        }
+
+        if(velocity.magnitude > 0.0f)
+            velocity.Normalize();
+
+        return velocity;
     }
 
     bool CanMove(Vector3 Direction)
@@ -129,6 +163,11 @@ public class Player : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        if (collision.gameObject == Floor)
+        {
+            IsLanded = true;
+        }
+
         if (collision.gameObject != Ball)
         {
             return;
@@ -156,23 +195,98 @@ public class Player : MonoBehaviour
         }
     }
 
+    void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject == Floor)
+            IsLanded = false;
+    }
+
     void Pass()
     {
         Ball.SetActive(true);
 
-        var direction = GetPassDirection();
-        Ball.GetComponent<Rigidbody>().velocity = direction;
+        //아군은 pass time동안은 못 움직임
+        var players = GameObject.FindGameObjectsWithTag(Tags.Player);
 
-        direction.Normalize();
-        var ballPosition = transform.position + direction * 0.2f;
-        Ball.transform.position = ballPosition;
+        foreach (var player in players)
+        {
+            if (player.GetComponent<Player>().Team != Team)
+                continue;
 
+            player.GetComponent<Player>().BlockInput = true;
+            player.GetComponent<Player>().BlockTime = PassTime;
+        }
+
+        var goal = GetPassHandler();
+        Vector3 start;
+        Vector3 end;
+
+        if (goal != null)
+        {
+            start = transform.position;
+            end = goal.transform.position;
+            var dir = end - start;
+            dir.Normalize();
+            start += dir * 0.15f;
+            start.y += 0.12f;
+            end.y -= 0.24f;
+
+            IsPossessed = false;
+            goal.GetComponent<Player>().IsPossessed = true;
+        }
+        else
+        {
+            var dir = GetPassDirection();
+
+            //이 방향으로 기본 속도로 쏜다 그냥 그게 끝
+            start = transform.position;
+            end = start + dir * DefaultPassSpeed;
+            dir.Normalize();
+            start += dir * 0.15f;
+            start.y += 0.12f;
+            end.y -= 0.24f;
+        }
+
+        var velocity = (end - start) / PassTime - Physics.gravity * PassTime;
+
+        if (velocity.magnitude > MaxPassSpeed)
+        {
+            velocity *= MaxPassSpeed / velocity.magnitude;
+        }
+
+        Ball.transform.position = start;
+        Ball.GetComponent<Rigidbody>().velocity = velocity;
         Ball.GetComponent<Ball>().Owner = null;
     }
 
     Vector3 GetPassDirection()
     {
+        var dir = GetInputDirection();
+
+        if (dir.sqrMagnitude == 0.0f)
+        {
+            if (GetComponent<SpriteRenderer>().flipX)
+            {
+                dir.x = -1.0f;
+            }
+            else
+            {
+                dir.x = 1.0f;
+            }
+        }
+
+        return dir;
+    }
+
+    GameObject GetPassHandler()
+    {
+        var dir = GetPassDirection();
+        var dir2d = new Vector2(dir.x, dir.z);
+
         var players = GameObject.FindGameObjectsWithTag(Tags.Player);
+
+        GameObject target = null;
+        float targetDistance = 10000.0f;
 
         foreach (var player in players)
         {
@@ -182,16 +296,22 @@ public class Player : MonoBehaviour
                 continue;
             }
 
-            IsPossessed = false;
-            player.GetComponent<Player>().IsPossessed = true;
+            float playerZ = player.transform.position.z - transform.position.z;
+            float playerX = player.transform.position.x - transform.position.x;
+            var pdir = new Vector2(playerX, playerZ);
+            float angle = Vector2.Angle(dir2d, pdir);
 
-            var vel = player.transform.position - transform.position;
-            vel *= 2.0f;
-            vel.y += vel.magnitude * 0.5f;
+            if (Mathf.Abs(angle) >= MaxPassDegree)
+                continue;
 
-            return vel;
+            float distance = new Vector2(playerX, playerZ).magnitude;
+            if (targetDistance > distance)
+            {
+                target = player;
+                targetDistance = distance;
+            }
         }
 
-        return Vector3.zero;
+        return target;
     }
 }

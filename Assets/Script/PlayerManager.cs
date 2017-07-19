@@ -23,8 +23,13 @@ public class PlayerManager : MonoBehaviour
         if (!Input.GetButtonDown(Key.TabPlayer(Idx)))
             return;
 
+        var owner = Ball.GetComponent<Ball>().Owner;
+        if (owner != null &&
+            owner.GetComponent<Player>().Team == Idx)
+            return;
+
         //조작할 플레이어 변경하기
-        var players = GameObject.FindGameObjectsWithTag(Tags.Player);
+            var players = GameObject.FindGameObjectsWithTag(Tags.Player);
 
         GameObject nextPlayer = null;
         var minDistance = 999999.9f;

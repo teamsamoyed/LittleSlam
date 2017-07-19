@@ -104,7 +104,11 @@ MonoBehaviour:
   Team: 0
   Hp: 0
   Speed: 1
-  Jump: 4
+  Jump: 20
+  PassTime: 0.5
+  MaxPassDegree: 45
+  DefaultPassSpeed: 1
+  MaxPassSpeed: 3.5
 --- !u!212 &212659650465698090
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -7,5 +7,5 @@ public class Tags {
     public static readonly string Player = "Player";
     public static readonly string GameController = "GameController";
     public static readonly string Ball = "Ball";
-    public static readonly string Enemy = "Enemy";
+    public static readonly string Floor = "Floor";
 }
