@@ -32,6 +32,9 @@ public class Player : MonoBehaviour
     public float MaxPassSpeed;
     public float ShootMaxHoldTime;
 
+    public float ShootX;
+    public float ShootY;
+
     float ShootHoldTime;
     bool WaitShootRelease;
     bool IsShootMotionEnded;
@@ -121,7 +124,23 @@ public class Player : MonoBehaviour
 
     void ShootImpulse()
     {
-        Debug.Log("SHOOT");
+        var dir = new Vector3(1.0f, 1.0f);
+        dir.Normalize();
+
+        var startPos = transform.position;
+
+        if (GetComponent<SpriteRenderer>().flipX)
+            startPos.x -= ShootX;
+        else
+            startPos.x += ShootX;
+
+        startPos.y += ShootY;
+
+        dir *= 3.0f;
+        Ball.SetActive(true);
+        Ball.transform.position = startPos;
+        Ball.GetComponent<Ball>().Owner = null;
+        Ball.GetComponent<Rigidbody>().velocity = dir;
     }
 
     void ShootControl()

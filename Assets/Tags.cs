@@ -8,4 +8,5 @@ public class Tags {
     public static readonly string GameController = "GameController";
     public static readonly string Ball = "Ball";
     public static readonly string Floor = "Floor";
+    public static readonly string Goalpost = "Goalpost";
 }

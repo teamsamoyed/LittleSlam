@@ -110,6 +110,8 @@ MonoBehaviour:
   DefaultPassSpeed: 1
   MaxPassSpeed: 3.5
   ShootMaxHoldTime: 0.85
+  ShootX: 0.082
+  ShootY: 0.422
 --- !u!212 &212659650465698090
 SpriteRenderer:
   m_ObjectHideFlags: 1

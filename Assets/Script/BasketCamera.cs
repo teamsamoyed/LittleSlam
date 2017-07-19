@@ -31,16 +31,27 @@ public class BasketCamera : MonoBehaviour
         var follower = GetFollower();
 
         newPosition.x = Mathf.Clamp(follower.transform.position.x, MinX, MaxX);
+        var fy = follower.transform.position.y;
 
-        if (follower.transform.position.y > YCut)
+        if (!Ball.activeSelf)
+            fy += 0.2f;
+
+        if (fy > YCut)
         {
-            newPosition.y = StartY + follower.transform.position.y - YCut;
+            newPosition.y = StartY + fy - YCut;
         }
         else
         {
             newPosition.y = StartY;
         }
 
-        transform.position = newPosition;
+        var delta = newPosition - transform.position;
+
+        /* 카메라 툭툭 튀는 거 방지 - 나중에 손 볼것
+        if (delta.magnitude > 0.01f)
+            delta *= 0.01f / delta.magnitude;
+            */
+
+        transform.position += delta;
 	}
 }
