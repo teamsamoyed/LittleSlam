@@ -117,11 +117,9 @@ public class Player : MonoBehaviour
                 State = PlayerState.Shoot;
                 Ani.ResetTrigger("Shoot");
                 Ani.ResetTrigger("ShootEnd");
-                Ani.SetTrigger("Shoot");
                 WaitShootRelease = true;
                 IsShootMotionEnded = false;
                 ShootHoldTime = 0.0f;
-
 
                 // TODO : 앞, 뒤 슛 모션 추가되면 그거 맞춰서..
                 var goalposts = GameObject.FindGameObjectsWithTag(Tags.Goalpost);
@@ -138,11 +136,33 @@ public class Player : MonoBehaviour
                 }
 
                 var startPos = transform.position;
+                var dir = goal.transform.position - startPos;
 
-                if (goal.transform.position.x < startPos.x)
-                    GetComponent<SpriteRenderer>().flipX = true;
-                else
+                if (Mathf.Abs(dir.x) * 4 < Mathf.Abs(dir.z))
+                {
+                    if (dir.z < 0.0f)
+                    {
+                        Ani.SetBool("FrontShoot", true);
+                    }
+                    else if (dir.z > 0.0f)
+                    {
+                        Ani.SetBool("BackShoot", true);
+                    }
+
                     GetComponent<SpriteRenderer>().flipX = false;
+                }
+                else
+                {
+                    Ani.SetBool("FrontShoot", false);
+                    Ani.SetBool("BackShoot", false);
+
+                    if (goal.transform.position.x < startPos.x)
+                        GetComponent<SpriteRenderer>().flipX = true;
+                    else
+                        GetComponent<SpriteRenderer>().flipX = false;
+                }
+
+                Ani.SetTrigger("Shoot");
             }
         }
     }
