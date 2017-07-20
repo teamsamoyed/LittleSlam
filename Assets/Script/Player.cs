@@ -41,6 +41,9 @@ public class Player : MonoBehaviour
 
     PlayerState State = PlayerState.Move;
 
+    public float XCut;
+    public float ZCut;
+
 	// Use this for initialization
 	void Start ()
     {
@@ -125,8 +128,18 @@ public class Player : MonoBehaviour
 
     void ShootImpulse()
     {
-        var dir = new Vector3(1.0f, 1.0f);
-        dir.Normalize();
+        var goalposts = GameObject.FindGameObjectsWithTag(Tags.Goalpost);
+
+        GameObject goal = null;
+
+        foreach (var goalpost in goalposts)
+        {
+            if (goalpost.GetComponent<Goalpost>().Team != Team)
+            {
+                goal = goalpost;
+                break;
+            }
+        }
 
         var startPos = transform.position;
 
@@ -137,7 +150,9 @@ public class Player : MonoBehaviour
 
         startPos.y += ShootY;
 
-        dir *= 3.0f;
+        var endPos = goal.transform.position;
+
+        var dir = (endPos - startPos) / 1.5f - 0.5f * Physics.gravity * 1.5f;
         Ball.SetActive(true);
         Ball.transform.position = startPos;
         Ball.GetComponent<Ball>().Owner = null;
@@ -235,6 +250,11 @@ public class Player : MonoBehaviour
         CheckPosition.y += size.y;
         CheckPosition.x += Direction.x * size.x;
         CheckPosition.z += Direction.z * size.z;
+
+        if (CheckPosition.x <= -XCut || CheckPosition.x >= XCut ||
+            CheckPosition.z <= -ZCut || CheckPosition.z >= ZCut)
+            return false;
+
         size.y = 0.0f;
 
         var overlapped = Physics.OverlapBox(CheckPosition, size);
@@ -325,7 +345,7 @@ public class Player : MonoBehaviour
             dir.Normalize();
             start += dir * 0.15f;
             start.y += 0.12f;
-            end.y -= 0.24f;
+            end.y += 0.12f;
 
             IsPossessed = false;
             goal.GetComponent<Player>().IsPossessed = true;
@@ -340,10 +360,10 @@ public class Player : MonoBehaviour
             dir.Normalize();
             start += dir * 0.15f;
             start.y += 0.12f;
-            end.y -= 0.24f;
+            end.y += 0.12f;
         }
 
-        var velocity = (end - start) / PassTime - Physics.gravity * PassTime;
+        var velocity = (end - start) / PassTime - Physics.gravity * PassTime * 0.5f;
 
         if (velocity.magnitude > MaxPassSpeed)
         {

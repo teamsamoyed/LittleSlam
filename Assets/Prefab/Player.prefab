@@ -104,14 +104,16 @@ MonoBehaviour:
   Team: 0
   Hp: 0
   Speed: 1
-  Jump: 75
+  Jump: 65
   PassTime: 0.5
   MaxPassDegree: 45
   DefaultPassSpeed: 1
   MaxPassSpeed: 3.5
-  ShootMaxHoldTime: 0.85
+  ShootMaxHoldTime: 0.75
   ShootX: 0.082
   ShootY: 0.422
+  XCut: 3.58
+  ZCut: 1.96
 --- !u!212 &212659650465698090
 SpriteRenderer:
   m_ObjectHideFlags: 1
