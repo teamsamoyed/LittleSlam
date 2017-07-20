@@ -12,6 +12,7 @@ public class Goalpost : MonoBehaviour
         if (GameManager.Instance.Phase != GamePhase.InGame)
             return;
 
+        GameManager.Instance.Score[(Team + 1) % 2] += 2;
         GameManager.Instance.Phase = GamePhase.OutlinePass;
         //if (other.tag == Tags.Ball)
         //    SceneManager.LoadScene(SceneManager.GetActiveScene().name);

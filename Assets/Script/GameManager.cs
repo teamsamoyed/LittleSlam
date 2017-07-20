@@ -15,6 +15,8 @@ public enum GamePhase
 public class GameManager : MonoBehaviour
 {
     GamePhase phase = GamePhase.InGame;
+
+    public int[] Score = new int[2];
     public GamePhase Phase
     {
         get
