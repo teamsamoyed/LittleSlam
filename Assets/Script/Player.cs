@@ -13,7 +13,6 @@ public class Player : MonoBehaviour
     public bool IsPossessed;
     Rigidbody Body;
     BoxCollider Collider;
-    public int Index;
     public int Team;
     public float Hp;
     public float Speed;
@@ -108,12 +107,12 @@ public class Player : MonoBehaviour
 
         if (Ball.GetComponent<Ball>().Owner == gameObject)
         {
-            if (Input.GetButtonDown(Key.Pass(Index)))
+            if (Input.GetButtonDown(Key.Pass(Team)))
             {
                 Pass();
             }
 
-            if (Input.GetButtonDown(Key.Shoot(Index)))
+            if (Input.GetButtonDown(Key.Shoot(Team)))
             {
                 State = PlayerState.Shoot;
                 Ani.ResetTrigger("Shoot");
@@ -193,7 +192,7 @@ public class Player : MonoBehaviour
 
     void ShootControl()
     {
-        if (Input.GetButtonUp(Key.Shoot(Index)))
+        if (Input.GetButtonUp(Key.Shoot(Team)))
         {
             WaitShootRelease = false;
         }
@@ -249,22 +248,22 @@ public class Player : MonoBehaviour
     {
         var velocity = new Vector3(0.0f, 0.0f, 0.0f);
 
-        if (Input.GetButton(Key.Up(Index)))
+        if (Input.GetButton(Key.Up(Team)))
         {
             velocity.z = 1.0f;
         }
 
-        if (Input.GetButton(Key.Down(Index)))
+        if (Input.GetButton(Key.Down(Team)))
         {
             velocity.z = -1.0f;
         }
 
-        if (Input.GetButton(Key.Left(Index)))
+        if (Input.GetButton(Key.Left(Team)))
         {
             velocity.x = -1.0f;
         }
 
-        if (Input.GetButton(Key.Right(Index)))
+        if (Input.GetButton(Key.Right(Team)))
         {
             velocity.x = 1.0f;
         }
