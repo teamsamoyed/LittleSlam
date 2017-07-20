@@ -151,8 +151,18 @@ public class Player : MonoBehaviour
         startPos.y += ShootY;
 
         var endPos = goal.transform.position;
+        endPos.x -= 0.001f;
+        var ShootTime = 0.8f;
+        var dist = Mathf.Min((endPos - startPos).magnitude, 3.0f);
 
-        var dir = (endPos - startPos) / 1.5f - 0.5f * Physics.gravity * 1.5f;
+        ShootTime += dist * 0.33333f;
+
+        var dir = (endPos - startPos) / ShootTime - 0.5f * Physics.gravity * ShootTime;
+
+        var yvel = Body.velocity.y;
+
+        dir *= 1.0f - Random.Range(0.0f, Mathf.Abs(yvel) * 0.1f);
+
         Ball.SetActive(true);
         Ball.transform.position = startPos;
         Ball.GetComponent<Ball>().Owner = null;
