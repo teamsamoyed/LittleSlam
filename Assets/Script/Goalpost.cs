@@ -9,7 +9,10 @@ public class Goalpost : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Goal");
+        if (GameManager.Instance.Phase != GamePhase.InGame)
+            return;
+
+        GameManager.Instance.Phase = GamePhase.OutlinePass;
         //if (other.tag == Tags.Ball)
         //    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }

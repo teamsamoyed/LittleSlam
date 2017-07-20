@@ -122,6 +122,28 @@ public class Player : MonoBehaviour
                 WaitShootRelease = true;
                 IsShootMotionEnded = false;
                 ShootHoldTime = 0.0f;
+
+
+                // TODO : 앞, 뒤 슛 모션 추가되면 그거 맞춰서..
+                var goalposts = GameObject.FindGameObjectsWithTag(Tags.Goalpost);
+
+                GameObject goal = null;
+
+                foreach (var goalpost in goalposts)
+                {
+                    if (goalpost.GetComponent<Goalpost>().Team != Team)
+                    {
+                        goal = goalpost;
+                        break;
+                    }
+                }
+
+                var startPos = transform.position;
+
+                if (goal.transform.position.x < startPos.x)
+                    GetComponent<SpriteRenderer>().flipX = true;
+                else
+                    GetComponent<SpriteRenderer>().flipX = false;
             }
         }
     }

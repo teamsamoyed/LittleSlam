@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum GamePhase
 {
@@ -13,16 +14,48 @@ public enum GamePhase
 
 public class GameManager : MonoBehaviour
 {
+    GamePhase phase = GamePhase.InGame;
+    public GamePhase Phase
+    {
+        get
+        {
+            return phase;
+        }
+
+        set
+        {
+            if (phase == value)
+                return;
+
+            phase = value;
+
+            if (phase == GamePhase.OutlinePass)
+            {
+                //TODO : 일단 씬 재시작
+                StartCoroutine(Restart());
+            }
+        }
+    }
+
+    public static GameManager Instance;
+
+    GameObject Ball;
 
 	// Use this for initialization
-	void Start ()
+	void Awake ()
     {
-		
+        Instance = this;
 	}
 	
 	// Update is called once per frame
 	void Update ()
     {
-		
 	}
+
+    IEnumerator Restart()
+    {
+        yield return new WaitForSeconds(2.0f);
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
 }

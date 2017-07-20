@@ -6,6 +6,8 @@ public class Ball : MonoBehaviour
 {
     Rigidbody Body;
     public GameObject Owner;
+    public float XCut;
+    public float ZCut;
 
 	// Use this for initialization
 	void Start ()
@@ -16,5 +18,12 @@ public class Ball : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
+        if (transform.position.x <= -XCut ||
+            transform.position.x >= XCut ||
+            transform.position.z <= -ZCut ||
+            transform.position.z >= ZCut)
+        {
+            GameManager.Instance.Phase = GamePhase.OutlinePass;
+        }
 	}
 }
