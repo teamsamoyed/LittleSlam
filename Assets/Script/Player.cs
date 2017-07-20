@@ -274,7 +274,7 @@ public class Player : MonoBehaviour
         return velocity;
     }
 
-    bool CanMove(Vector3 Direction)
+    bool CanMove(Vector3 Direction, bool IsAutoMove = false)
     {
         Vector3 CheckPosition = transform.position;
         Vector3 size = Collider.size * 0.5f;
@@ -282,9 +282,12 @@ public class Player : MonoBehaviour
         CheckPosition.x += Direction.x * size.x;
         CheckPosition.z += Direction.z * size.z;
 
-        if (CheckPosition.x <= -XCut || CheckPosition.x >= XCut ||
-            CheckPosition.z <= -ZCut || CheckPosition.z >= ZCut)
-            return false;
+        if (!IsAutoMove)
+        {
+            if (CheckPosition.x <= -XCut || CheckPosition.x >= XCut ||
+                CheckPosition.z <= -ZCut || CheckPosition.z >= ZCut)
+                return false;
+        }
 
         size.y = 0.0f;
 
@@ -306,6 +309,10 @@ public class Player : MonoBehaviour
 
     void AutoMove()
     {
+        //우리 팀이 공 갖고 있는 경우,
+        //상대 팀이 공 갖고 있는 경우 나눠서 봐야 함
+        //둘 다 안 갖고 있는 경우는?
+        //둘 다 안 갖고 있으면 그냥 대기
     }
 
     void OnCollisionEnter(Collision collision)
