@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     Rigidbody Body;
     BoxCollider Collider;
     public int Team;
+    public int Index;
     public float Hp;
     public float Speed;
     public float Jump;
@@ -333,6 +334,18 @@ public class Player : MonoBehaviour
         //상대 팀이 공 갖고 있는 경우 나눠서 봐야 함
         //둘 다 안 갖고 있는 경우는?
         //둘 다 안 갖고 있으면 그냥 대기
+        if (Ball.GetComponent<Ball>().Owner == null)
+            return;
+
+        if (Ball.GetComponent<Ball>().Owner.GetComponent<Player>().Team == Team)
+        {
+            //우리 팀이 갖고 있는 경우 - 상대 골대 쪽 특정 지점으로 이동함
+        }
+        else
+        {
+            //적팀이 갖고 있는 경우 - 자기랑 Index 같은 선수 마크하러 감
+            //약간 반응 느리게
+        }
     }
 
     void OnCollisionEnter(Collision collision)
