@@ -53,6 +53,8 @@ public class Player : MonoBehaviour
     public float XCut;
     public float ZCut;
 
+    GameObject Indicator;
+
 	// Use this for initialization
 	void Start ()
     {
@@ -63,6 +65,7 @@ public class Player : MonoBehaviour
         Floor = GameObject.FindGameObjectWithTag(Tags.Floor);
         InitAutoGoal();
         AutoState = AutoMoveState.Move;
+        Indicator = transform.Find("Indicator").gameObject;
 	}
 
     void ReadyShoot()
@@ -74,6 +77,8 @@ public class Player : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
+        Indicator.SetActive(IsPossessed);
+
         Ani.SetBool("Landing", IsLanded);
         Ani.SetBool("OwnBall", Ball.GetComponent<Ball>().Owner == gameObject);
 
