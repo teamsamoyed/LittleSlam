@@ -84,10 +84,6 @@ public class Player : MonoBehaviour
             {
                 BlockInput = false;
             }
-            else
-            {
-                return;
-            }
         }
 
         if (IsPossessed)
@@ -132,8 +128,7 @@ public class Player : MonoBehaviour
                 WaitShootRelease = true;
                 IsShootMotionEnded = false;
                 ShootHoldTime = 0.0f;
-
-                // TODO : 앞, 뒤 슛 모션 추가되면 그거 맞춰서..
+                
                 var goalposts = GameObject.FindGameObjectsWithTag(Tags.Goalpost);
 
                 GameObject goal = null;
@@ -253,27 +248,7 @@ public class Player : MonoBehaviour
 
         var velocity = GetInputDirection();
 
-        if (velocity.sqrMagnitude > 0.0f)
-        {
-            if (velocity.x < 0.0f)
-            {
-                GetComponent<SpriteRenderer>().flipX = true;
-            }
-            else if(velocity.x > 0.0f)
-            {
-                GetComponent<SpriteRenderer>().flipX = false;
-            }
-        }
-
-        if (velocity != Vector3.zero && transform.position.y <= -0.01f)
-            Ani.SetBool("Running", true);
-        else
-            Ani.SetBool("Running", false);
-
-        if (CanMove(velocity))
-        {
-            transform.Translate(Time.deltaTime * velocity * Speed);
-        }
+        MoveTo(velocity, false);
     }
 
     Vector3 GetInputDirection()
@@ -343,13 +318,13 @@ public class Player : MonoBehaviour
     {
         if (Ball.GetComponent<Ball>().Owner == null)
         {
-            Ani.SetBool("Running", false);
+            MoveTo(Vector3.zero, true);
             return;
         }
 
         if (AutoState == AutoMoveState.Stay)
         {
-            Ani.SetBool("Running", false);
+            MoveTo(Vector3.zero, true);
             StayTime -= Time.deltaTime;
 
             if (StayTime <= 0.0f)
@@ -370,21 +345,10 @@ public class Player : MonoBehaviour
             return;
         }
 
-        Ani.SetBool("Running", true);
-
         var dir = AutoGoal - now;
         dir.Normalize();
 
-        if (dir.x < 0.0f)
-        {
-            GetComponent<SpriteRenderer>().flipX = true;
-        }
-        else if (dir.x > 0.0f)
-        {
-            GetComponent<SpriteRenderer>().flipX = false;
-        }
-
-        transform.Translate(Time.deltaTime * dir * Speed);
+        MoveTo(dir, true);
     }
 
     void OnCollisionEnter(Collision collision)
@@ -561,8 +525,7 @@ public class Player : MonoBehaviour
         }
         else
         {
-            //적팀이 갖고 있는 경우 - 자기랑 Index 같은 선수 마크하러 감
-            //약간 반응 느리게
+            //적팀이 갖고 있는 경우 - possessed 되어 있는 애들 제외 나머지 애들끼리 서로 마크하게 만들기
             //
         }
     }
@@ -574,5 +537,29 @@ public class Player : MonoBehaviour
 
         InitAutoGoal();
         AutoState = AutoMoveState.Move;
+    }
+
+    void MoveTo(Vector3 direction, bool IsAutoMove)
+    {
+        if (direction == Vector3.zero || BlockInput)
+        {
+            Ani.SetBool("Running", false);
+            return;
+        }
+
+        Ani.SetBool("Running", true);
+
+        if (direction.x < 0.0f)
+        {
+            GetComponent<SpriteRenderer>().flipX = true;
+        }
+        else if (direction.x > 0.0f)
+        {
+            GetComponent<SpriteRenderer>().flipX = false;
+        }
+        if (!CanMove(direction, IsAutoMove))
+            return;
+
+        transform.Translate(direction * Time.deltaTime * Speed);
     }
 }
