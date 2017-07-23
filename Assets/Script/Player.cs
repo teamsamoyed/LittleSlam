@@ -8,6 +8,12 @@ enum PlayerState
     Shoot,
 }
 
+enum AutoMoveState
+{
+    Stay,
+    Move,
+}
+
 public class Player : MonoBehaviour
 {
     public bool IsPossessed;
@@ -40,6 +46,9 @@ public class Player : MonoBehaviour
     bool IsShootMotionEnded;
 
     PlayerState State = PlayerState.Move;
+    AutoMoveState AutoState = AutoMoveState.Stay;
+    float StayTime = 0.0f;
+    Vector3 AutoGoal;
 
     public float XCut;
     public float ZCut;
@@ -52,6 +61,8 @@ public class Player : MonoBehaviour
         Ani = GetComponent<Animator>();
         Ball = GameObject.FindGameObjectWithTag(Tags.Ball);
         Floor = GameObject.FindGameObjectWithTag(Tags.Floor);
+        InitAutoGoal();
+        AutoState = AutoMoveState.Move;
 	}
 
     void ReadyShoot()
@@ -330,22 +341,50 @@ public class Player : MonoBehaviour
 
     void AutoMove()
     {
-        //우리 팀이 공 갖고 있는 경우,
-        //상대 팀이 공 갖고 있는 경우 나눠서 봐야 함
-        //둘 다 안 갖고 있는 경우는?
-        //둘 다 안 갖고 있으면 그냥 대기
         if (Ball.GetComponent<Ball>().Owner == null)
+        {
+            Ani.SetBool("Running", false);
             return;
+        }
 
-        if (Ball.GetComponent<Ball>().Owner.GetComponent<Player>().Team == Team)
+        if (AutoState == AutoMoveState.Stay)
         {
-            //우리 팀이 갖고 있는 경우 - 상대 골대 쪽 특정 지점으로 이동함
+            Ani.SetBool("Running", false);
+            StayTime -= Time.deltaTime;
+
+            if (StayTime <= 0.0f)
+            {
+                AutoState = AutoMoveState.Move;
+                InitAutoGoal();
+            }
+
+            return;
         }
-        else
+
+        var now = transform.position;
+
+        if (Vector3.Distance(now, AutoGoal) < 0.1f)
         {
-            //적팀이 갖고 있는 경우 - 자기랑 Index 같은 선수 마크하러 감
-            //약간 반응 느리게
+            AutoState = AutoMoveState.Stay;
+            StayTime = Random.Range(3.5f, 5.0f);
+            return;
         }
+
+        Ani.SetBool("Running", true);
+
+        var dir = AutoGoal - now;
+        dir.Normalize();
+
+        if (dir.x < 0.0f)
+        {
+            GetComponent<SpriteRenderer>().flipX = true;
+        }
+        else if (dir.x > 0.0f)
+        {
+            GetComponent<SpriteRenderer>().flipX = false;
+        }
+
+        transform.Translate(Time.deltaTime * dir * Speed);
     }
 
     void OnCollisionEnter(Collision collision)
@@ -500,5 +539,40 @@ public class Player : MonoBehaviour
         }
 
         return target;
+    }
+
+    void InitAutoGoal()
+    {
+        if (Ball.GetComponent<Ball>().Owner == null)
+            return;
+
+        if (Ball.GetComponent<Ball>().Owner.GetComponent<Player>().Team == Team)
+        {
+            //우리 팀이 갖고 있는 경우 - 상대 골대 쪽 특정 지점으로 이동함
+            AutoGoal.z = Random.Range(-ZCut, ZCut);
+            if (Team == 1)
+            {
+                AutoGoal.x = Random.Range(-0.5f * XCut, -XCut);
+            }
+            else
+            {
+                AutoGoal.x = Random.Range(0.5f * XCut, XCut);
+            }
+        }
+        else
+        {
+            //적팀이 갖고 있는 경우 - 자기랑 Index 같은 선수 마크하러 감
+            //약간 반응 느리게
+            //
+        }
+    }
+
+    public void ChangeToAutoMove()
+    {
+        if (AutoState == AutoMoveState.Stay)
+            return;
+
+        InitAutoGoal();
+        AutoState = AutoMoveState.Move;
     }
 }

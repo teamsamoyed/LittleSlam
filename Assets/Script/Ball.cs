@@ -5,7 +5,26 @@ using UnityEngine;
 public class Ball : MonoBehaviour
 {
     Rigidbody Body;
-    public GameObject Owner;
+    GameObject owner;
+
+    public GameObject Owner
+    {
+        get
+        {
+            return owner;
+        }
+
+        set
+        {
+            var prevOwner = owner;
+            owner = value;
+            if (prevOwner == null)
+                PlayerManager.InitAutoMove();
+            else
+                prevOwner.GetComponent<Player>().ChangeToAutoMove();
+        }
+    }
+
     public float XCut;
     public float ZCut;
 

@@ -29,7 +29,7 @@ public class PlayerManager : MonoBehaviour
             return;
 
         //조작할 플레이어 변경하기
-            var players = GameObject.FindGameObjectsWithTag(Tags.Player);
+        var players = GameObject.FindGameObjectsWithTag(Tags.Player);
 
         GameObject nextPlayer = null;
         var minDistance = 999999.9f;
@@ -42,6 +42,7 @@ public class PlayerManager : MonoBehaviour
             if (player.GetComponent<Player>().IsPossessed)
             {
                 player.GetComponent<Player>().IsPossessed = false;
+                player.GetComponent<Player>().ChangeToAutoMove();
                 continue;
             }
 
@@ -57,6 +58,16 @@ public class PlayerManager : MonoBehaviour
         if (nextPlayer != null)
         {
             nextPlayer.GetComponent<Player>().IsPossessed = true;
+        }
+    }
+
+    public static void InitAutoMove()
+    {
+        var players = GameObject.FindGameObjectsWithTag(Tags.Player);
+
+        foreach (var player in players)
+        {
+            player.GetComponent<Player>().ChangeToAutoMove();
         }
     }
 }
