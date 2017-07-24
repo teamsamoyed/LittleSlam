@@ -318,7 +318,7 @@ public class Player : MonoBehaviour
     #endregion
 
     #region Pass
-    void Pass()
+    void Pass(GameObject goal = null)
     {
         Ball.SetActive(true);
 
@@ -334,7 +334,9 @@ public class Player : MonoBehaviour
             player.GetComponent<Player>().BlockTime = PassTime;
         }
 
-        var goal = GetPassHandler();
+        if(goal == null)
+            GetPassHandler();
+
         Vector3 start;
         Vector3 end;
 
@@ -615,7 +617,7 @@ public class Player : MonoBehaviour
         {
             if (Input.GetButtonDown(Key.Pass(Team)))
             {
-                Pass();
+                Pass(PlayerManager.GetPlayer(Team, 1));
                 GameManager.Instance.Phase = GamePhase.InGame;
             }
             return;

@@ -20,6 +20,9 @@ public class PlayerManager : MonoBehaviour
 
     void TabPlayer(int Idx)
     {
+        if (GameManager.Instance.Phase != GamePhase.InGame)
+            return;
+
         if (!Input.GetButtonDown(Key.TabPlayer(Idx)))
             return;
 
@@ -69,5 +72,20 @@ public class PlayerManager : MonoBehaviour
         {
             player.GetComponent<Player>().ChangeToAutoMove();
         }
+    }
+
+    public static GameObject GetPlayer(int Team, int Index)
+    {
+        var players = GameObject.FindGameObjectsWithTag(Tags.Player);
+
+        foreach (var player in players)
+        {
+            var playerComponent = player.GetComponent<Player>();
+
+            if (playerComponent.Team == Team && playerComponent.Index == Index)
+                return player;
+        }
+
+        return null;
     }
 }

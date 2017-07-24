@@ -31,6 +31,11 @@ public class Ball : MonoBehaviour
                 prevOwner.GetComponent<Player>().ChangeToAutoMove();
                 RecentTeam = prevOwner.GetComponent<Player>().Team;
             }
+
+            if (owner != null && GameManager.Instance.Phase == GamePhase.OutlinePass)
+            {
+                GameManager.Instance.Phase = GamePhase.InGame;
+            }
         }
     }
 
@@ -42,9 +47,9 @@ public class Ball : MonoBehaviour
     {
         Body = GetComponent<Rigidbody>();
 	}
-	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    void Update()
     {
         if (GameManager.Instance.Phase != GamePhase.InGame)
             return;
@@ -52,33 +57,29 @@ public class Ball : MonoBehaviour
         bool isOut = false;
         var outlinePos = new Vector3();
 
-        if (prevPos.x >= -XCut && prevPos.x <= XCut &&
-            prevPos.z >= -ZCut && prevPos.z <= ZCut)
+        if (transform.position.x <= -XCut)
         {
-            if (transform.position.x <= -XCut)
-            {
-                isOut = true;
-                outlinePos.x = -XCut - 0.1f;
-                outlinePos.z = transform.position.z;
-            }
-            else if (transform.position.x >= XCut)
-            {
-                isOut = true;
-                outlinePos.x = XCut + 0.1f;
-                outlinePos.z = transform.position.z;
-            }
-            else if (transform.position.z <= -ZCut)
-            {
-                isOut = true;
-                outlinePos.x = transform.position.x;
-                outlinePos.z = -ZCut - 0.1f;
-            }
-            else if (transform.position.z >= ZCut)
-            {
-                isOut = true;
-                outlinePos.x = transform.position.z;
-                outlinePos.z = ZCut + 0.1f;
-            }
+            isOut = true;
+            outlinePos.x = -XCut - 0.1f;
+            outlinePos.z = transform.position.z;
+        }
+        else if (transform.position.x >= XCut)
+        {
+            isOut = true;
+            outlinePos.x = XCut + 0.1f;
+            outlinePos.z = transform.position.z;
+        }
+        else if (transform.position.z <= -ZCut)
+        {
+            isOut = true;
+            outlinePos.x = transform.position.x;
+            outlinePos.z = -ZCut - 0.1f;
+        }
+        else if (transform.position.z >= ZCut)
+        {
+            isOut = true;
+            outlinePos.x = transform.position.z;
+            outlinePos.z = ZCut + 0.1f;
         }
 
         if (isOut)

@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
 
     public int[] Score = new int[2];
     public float TotalGameTime;
+    float RemainGameTime;
     public GamePhase Phase
     {
         get
@@ -44,10 +45,21 @@ public class GameManager : MonoBehaviour
     {
         Instance = this;
 	}
+
+    void Start()
+    {
+        RemainGameTime = TotalGameTime;
+    }
 	
 	// Update is called once per frame
 	void Update ()
     {
+        RemainGameTime -= Time.deltaTime;
+
+        if (RemainGameTime <= 0.0f)
+        {
+            Phase = GamePhase.GameEnd;
+        }
 	}
 
     IEnumerator Restart()

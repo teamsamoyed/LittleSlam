@@ -673,7 +673,7 @@ Transform:
   - {fileID: 2142857976}
   - {fileID: 1009188509}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &474330494
 Prefab:
@@ -1336,7 +1336,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4838210479377508, guid: 39d482284422e0441ad41df860c61351, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 3.718
+      value: 3.7180004
       objectReference: {fileID: 0}
     - target: {fileID: 4838210479377508, guid: 39d482284422e0441ad41df860c61351, type: 2}
       propertyPath: m_LocalPosition.y
@@ -1348,15 +1348,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4838210479377508, guid: 39d482284422e0441ad41df860c61351, type: 2}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4838210479377508, guid: 39d482284422e0441ad41df860c61351, type: 2}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4838210479377508, guid: 39d482284422e0441ad41df860c61351, type: 2}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4838210479377508, guid: 39d482284422e0441ad41df860c61351, type: 2}
       propertyPath: m_LocalRotation.w
@@ -1364,7 +1364,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4838210479377508, guid: 39d482284422e0441ad41df860c61351, type: 2}
       propertyPath: m_RootOrder
-      value: 2
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1443221979711810, guid: 39d482284422e0441ad41df860c61351, type: 2}
       propertyPath: m_Name
@@ -1378,6 +1378,18 @@ Prefab:
     - target: {fileID: 1443221979711810, guid: 39d482284422e0441ad41df860c61351, type: 2}
       propertyPath: m_TagString
       value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 4838210479377508, guid: 39d482284422e0441ad41df860c61351, type: 2}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4838210479377508, guid: 39d482284422e0441ad41df860c61351, type: 2}
+      propertyPath: m_LocalScale.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4838210479377508, guid: 39d482284422e0441ad41df860c61351, type: 2}
+      propertyPath: m_LocalScale.z
+      value: 1.5
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114225354211390094, guid: 39d482284422e0441ad41df860c61351, type: 2}
@@ -1510,7 +1522,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Team: 0
-  GoalPos: {x: 0, y: 0, z: 0}
+  GoalPos: {x: -3.62, y: 0, z: 0}
 --- !u!1001 &787657308
 Prefab:
   m_ObjectHideFlags: 0
@@ -2190,7 +2202,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1266391394
 MonoBehaviour:
@@ -2203,36 +2215,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99444836d105b9e448fdd45601efd555, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  phase: 1
   Score: 0000000000000000
-  TotalGameTime: 0
---- !u!1 &1289171927
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1289171928}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1289171928
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1289171927}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.62, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 10
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  TotalGameTime: 300
 --- !u!4 &1406702608 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4551007994841276, guid: 41251a2fd68a1ee47929b6b1b0cfdba8,
@@ -2449,7 +2434,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Team: 1
-  GoalPos: {x: 0, y: 0, z: 0}
+  GoalPos: {x: 3.62, y: 0, z: 0}
 --- !u!136 &1509853774
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2568,7 +2553,7 @@ Transform:
   - {fileID: 1097948978}
   - {fileID: 682491544}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1765988466
 GameObject:
