@@ -24,6 +24,7 @@ public class Player : MonoBehaviour
     public float Hp;
     public float Speed;
     public float Jump;
+    public float DunkJump;
     public float PassTime;
     GameObject Ball;
     GameObject Floor;
@@ -40,6 +41,10 @@ public class Player : MonoBehaviour
 
     public float ShootX;
     public float ShootY;
+    public float FrontShootX;
+    public float FrontShootY;
+    public float BackShootX;
+    public float BackShootY;
 
     float ShootHoldTime;
     bool WaitShootRelease;
@@ -91,6 +96,27 @@ public class Player : MonoBehaviour
             }
         }
 
+        switch (GameManager.Instance.Phase)
+        {
+            case GamePhase.BallGetting:
+                break;
+            case GamePhase.FreeDraw:
+                break;
+            case GamePhase.GameEnd:
+                break;
+            case GamePhase.InGame:
+                InGameUpdate();
+                break;
+            case GamePhase.OutlinePass:
+                OutlinePassUpdate();
+                break;
+        }
+	}
+
+    #region InGame
+
+    void InGameUpdate()
+    {
         if (IsPossessed)
         {
             Control();
@@ -99,7 +125,7 @@ public class Player : MonoBehaviour
         {
             AutoMove();
         }
-	}
+    }
 
     void Control()
     {
@@ -114,6 +140,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    #region Move
     void MoveControl()
     {
         Move();
@@ -133,7 +160,7 @@ public class Player : MonoBehaviour
                 WaitShootRelease = true;
                 IsShootMotionEnded = false;
                 ShootHoldTime = 0.0f;
-                
+
                 var goalposts = GameObject.FindGameObjectsWithTag(Tags.Goalpost);
 
                 GameObject goal = null;
@@ -155,9 +182,11 @@ public class Player : MonoBehaviour
                     if (dir.z < 0.0f)
                     {
                         Ani.SetBool("FrontShoot", true);
+                        Ani.SetBool("BackShoot", false);
                     }
                     else if (dir.z > 0.0f)
                     {
+                        Ani.SetBool("FrontShoot", false);
                         Ani.SetBool("BackShoot", true);
                     }
 
@@ -175,73 +204,6 @@ public class Player : MonoBehaviour
                 }
 
                 Ani.SetTrigger("Shoot");
-            }
-        }
-    }
-
-    void ShootImpulse()
-    {
-        var goalposts = GameObject.FindGameObjectsWithTag(Tags.Goalpost);
-
-        GameObject goal = null;
-
-        foreach (var goalpost in goalposts)
-        {
-            if (goalpost.GetComponent<Goalpost>().Team != Team)
-            {
-                goal = goalpost;
-                break;
-            }
-        }
-
-        var startPos = transform.position;
-
-        if (GetComponent<SpriteRenderer>().flipX)
-            startPos.x -= ShootX;
-        else
-            startPos.x += ShootX;
-
-        startPos.y += ShootY;
-
-        var endPos = goal.transform.position;
-        endPos.x -= 0.001f;
-        var ShootTime = 0.8f;
-        var dist = Mathf.Min((endPos - startPos).magnitude, 3.0f);
-
-        ShootTime += dist * 0.33333f;
-
-        var dir = (endPos - startPos) / ShootTime - 0.5f * Physics.gravity * ShootTime;
-
-        var yvel = Body.velocity.y;
-
-        dir *= 1.0f - Random.Range(0.0f, Mathf.Abs(yvel) * 0.1f);
-
-        Ball.SetActive(true);
-        Ball.transform.position = startPos;
-        Ball.GetComponent<Ball>().Owner = null;
-        Ball.GetComponent<Rigidbody>().velocity = dir;
-    }
-
-    void ShootControl()
-    {
-        if (Input.GetButtonUp(Key.Shoot(Team)))
-        {
-            WaitShootRelease = false;
-        }
-
-        ShootHoldTime += Time.deltaTime;
-
-        if (ShootHoldTime > ShootMaxHoldTime)
-            WaitShootRelease = false;
-
-        if (IsShootMotionEnded && !WaitShootRelease)
-        {
-            //공 발사
-            Ani.SetTrigger("ShootEnd");
-
-            if (IsLanded)
-            {
-                State = PlayerState.Move;
             }
         }
     }
@@ -280,7 +242,7 @@ public class Player : MonoBehaviour
             velocity.x = 1.0f;
         }
 
-        if(velocity.magnitude > 0.0f)
+        if (velocity.magnitude > 0.0f)
             velocity.Normalize();
 
         return velocity;
@@ -288,6 +250,9 @@ public class Player : MonoBehaviour
 
     bool CanMove(Vector3 Direction, bool IsAutoMove = false)
     {
+        if (IsAutoMove)
+            return true;
+
         Vector3 CheckPosition = transform.position;
         Vector3 size = Collider.size * 0.5f;
         CheckPosition.y += size.y;
@@ -319,83 +284,32 @@ public class Player : MonoBehaviour
         return true;
     }
 
-    void AutoMove()
+    void MoveTo(Vector3 direction, bool IsAutoMove)
     {
-        if (Ball.GetComponent<Ball>().Owner == null)
+        if (direction == Vector3.zero || BlockInput)
         {
-            MoveTo(Vector3.zero, true);
+            Ani.SetBool("Running", false);
             return;
         }
 
-        if (AutoState == AutoMoveState.Stay)
+        Ani.SetBool("Running", true);
+
+        if (direction.x < 0.0f)
         {
-            MoveTo(Vector3.zero, true);
-            StayTime -= Time.deltaTime;
-
-            if (StayTime <= 0.0f)
-            {
-                AutoState = AutoMoveState.Move;
-                InitAutoGoal();
-            }
-
-            return;
+            GetComponent<SpriteRenderer>().flipX = true;
         }
-
-        var now = transform.position;
-
-        if (Vector3.Distance(now, AutoGoal) < 0.1f)
+        else if (direction.x > 0.0f)
         {
-            AutoState = AutoMoveState.Stay;
-            StayTime = Random.Range(3.5f, 5.0f);
-            return;
+            GetComponent<SpriteRenderer>().flipX = false;
         }
+        if (!CanMove(direction, IsAutoMove))
+            return;
 
-        var dir = AutoGoal - now;
-        dir.Normalize();
-
-        MoveTo(dir, true);
+        transform.Translate(direction * Time.deltaTime * Speed);
     }
+    #endregion
 
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject == Floor)
-        {
-            IsLanded = true;
-        }
-
-        if (collision.gameObject != Ball)
-        {
-            return;
-        }
-
-        //ball 소유하기
-        Ball.GetComponent<Ball>().Owner = gameObject;
-        Ball.SetActive(false);
-
-        if (!IsPossessed)
-        {
-            var players = GameObject.FindGameObjectsWithTag(Tags.Player);
-
-            foreach (var player in players)
-            {
-                if (player.GetComponent<Player>().Team != Team)
-                {
-                    continue;
-                }
-
-                player.GetComponent<Player>().IsPossessed = false;
-            }
-
-            IsPossessed = true;
-        }
-    }
-
-    void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject == Floor)
-            IsLanded = false;
-    }
-
+    #region Pass
     void Pass()
     {
         Ball.SetActive(true);
@@ -509,6 +423,130 @@ public class Player : MonoBehaviour
 
         return target;
     }
+    #endregion
+
+    #region Shoot
+
+    void ShootControl()
+    {
+        if (Input.GetButtonUp(Key.Shoot(Team)))
+        {
+            WaitShootRelease = false;
+        }
+
+        ShootHoldTime += Time.deltaTime;
+
+        if (ShootHoldTime > ShootMaxHoldTime)
+            WaitShootRelease = false;
+
+        if (IsShootMotionEnded && !WaitShootRelease)
+        {
+            //공 발사
+            Ani.SetTrigger("ShootEnd");
+
+            if (IsLanded)
+            {
+                State = PlayerState.Move;
+            }
+        }
+    }
+
+    void ShootImpulse()
+    {
+        var goalposts = GameObject.FindGameObjectsWithTag(Tags.Goalpost);
+
+        GameObject goal = null;
+
+        foreach (var goalpost in goalposts)
+        {
+            if (goalpost.GetComponent<Goalpost>().Team != Team)
+            {
+                goal = goalpost;
+                break;
+            }
+        }
+
+        var startPos = transform.position;
+
+        if (Ani.GetBool("FrontShoot"))
+        {
+            startPos.x += FrontShootX;
+            startPos.y += FrontShootY;
+        }
+        else if (Ani.GetBool("BackShoot"))
+        {
+            startPos.x += BackShootX;
+            startPos.y += BackShootY;
+        }
+        else
+        {
+            if (GetComponent<SpriteRenderer>().flipX)
+                startPos.x -= ShootX;
+            else
+                startPos.x += ShootX;
+        }
+
+        startPos.y += ShootY;
+
+        var endPos = goal.transform.position;
+        endPos.x -= 0.001f;
+        var ShootTime = 0.8f;
+        var dist = Mathf.Min((endPos - startPos).magnitude, 3.0f);
+
+        ShootTime += dist * 0.33333f;
+
+        var dir = (endPos - startPos) / ShootTime - 0.5f * Physics.gravity * ShootTime;
+
+        var yvel = Body.velocity.y;
+
+        dir *= 1.0f - Random.Range(0.0f, Mathf.Abs(yvel) * 0.1f);
+
+        Ball.SetActive(true);
+        Ball.transform.position = startPos;
+        Ball.GetComponent<Ball>().Owner = null;
+        Ball.GetComponent<Rigidbody>().velocity = dir;
+    }
+
+    #endregion
+
+    #region AutoMove
+
+    void AutoMove()
+    {
+        if (Ball.GetComponent<Ball>().Owner == null)
+        {
+            MoveTo(Vector3.zero, true);
+            return;
+        }
+
+        if (AutoState == AutoMoveState.Stay)
+        {
+            MoveTo(Vector3.zero, true);
+            StayTime -= Time.deltaTime;
+
+            if (StayTime <= 0.0f)
+            {
+                AutoState = AutoMoveState.Move;
+                InitAutoGoal();
+            }
+
+            return;
+        }
+
+        var now = transform.position;
+
+        if (Vector3.Distance(now, AutoGoal) < 0.1f)
+        {
+            AutoState = AutoMoveState.Stay;
+            StayTime = Random.Range(3.5f, 5.0f);
+            return;
+        }
+
+        var dir = AutoGoal - now;
+        dir.Normalize();
+
+        MoveTo(dir, true);
+    }
 
     void InitAutoGoal()
     {
@@ -531,7 +569,15 @@ public class Player : MonoBehaviour
         else
         {
             //적팀이 갖고 있는 경우 - possessed 되어 있는 애들 제외 나머지 애들끼리 서로 마크하게 만들기
-            //
+            AutoGoal.z = Random.Range(-ZCut, ZCut);
+            if (Team == 0)
+            {
+                AutoGoal.x = Random.Range(-0.5f * XCut, -XCut);
+            }
+            else
+            {
+                AutoGoal.x = Random.Range(0.5f * XCut, XCut);
+            }
         }
     }
 
@@ -544,27 +590,56 @@ public class Player : MonoBehaviour
         AutoState = AutoMoveState.Move;
     }
 
-    void MoveTo(Vector3 direction, bool IsAutoMove)
+    #endregion
+
+    #endregion
+
+
+    #region OutlinePass
+    void OutlinePassUpdate()
     {
-        if (direction == Vector3.zero || BlockInput)
-        {
-            Ani.SetBool("Running", false);
-            return;
-        }
-
-        Ani.SetBool("Running", true);
-
-        if (direction.x < 0.0f)
-        {
-            GetComponent<SpriteRenderer>().flipX = true;
-        }
-        else if (direction.x > 0.0f)
-        {
-            GetComponent<SpriteRenderer>().flipX = false;
-        }
-        if (!CanMove(direction, IsAutoMove))
-            return;
-
-        transform.Translate(direction * Time.deltaTime * Speed);
     }
+    #endregion
+
+    #region Collision
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject == Floor)
+        {
+            IsLanded = true;
+        }
+
+        if (collision.gameObject != Ball)
+        {
+            return;
+        }
+
+        //ball 소유하기
+        Ball.GetComponent<Ball>().Owner = gameObject;
+        Ball.SetActive(false);
+
+        if (!IsPossessed)
+        {
+            var players = GameObject.FindGameObjectsWithTag(Tags.Player);
+
+            foreach (var player in players)
+            {
+                if (player.GetComponent<Player>().Team != Team)
+                {
+                    continue;
+                }
+
+                player.GetComponent<Player>().IsPossessed = false;
+            }
+
+            IsPossessed = true;
+        }
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject == Floor)
+            IsLanded = false;
+    }
+    #endregion
 }
