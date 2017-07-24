@@ -9,12 +9,13 @@ public enum GamePhase
     InGame, //인 게임 진행
     OutlinePass, //골 넣고 나서 or 라인 밖으로 공 나가서 아군한테 패스
     FreeDraw, //자유투
-    GameEnd // 게임 종료 결과
+    GameEnd, // 게임 종료 결과
+    Wait //잠깐 대기
 }
 
 public class GameManager : MonoBehaviour
 {
-    GamePhase phase = GamePhase.InGame;
+    public GamePhase phase = GamePhase.InGame;
 
     public int[] Score = new int[2];
     public float TotalGameTime;
@@ -31,12 +32,6 @@ public class GameManager : MonoBehaviour
                 return;
 
             phase = value;
-
-            if (phase == GamePhase.OutlinePass)
-            {
-                //TODO : 일단 씬 재시작
-                StartCoroutine(Restart());
-            }
         }
     }
 
@@ -60,5 +55,20 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(2.0f);
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public IEnumerator ToOutlinePass(int OwnTeam, Vector3 Pos)
+    {
+        yield return new WaitForSeconds(2.0f);
+
+        //모든 플레이어들 Outline Pass 기준으로 동작하게 해준다
+        var players = GameObject.FindGameObjectsWithTag(Tags.Player);
+
+        foreach (var player in players)
+        {
+            player.GetComponent<Player>().ToOutlinePos(OwnTeam, Pos);
+        }
+
+        Phase = GamePhase.OutlinePass;
     }
 }

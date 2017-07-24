@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class Goalpost : MonoBehaviour
 {
     public int Team;
+    public Vector3 GoalPos;
 
     void OnTriggerEnter(Collider other)
     {
@@ -13,8 +14,8 @@ public class Goalpost : MonoBehaviour
             return;
 
         GameManager.Instance.Score[(Team + 1) % 2] += 2;
-        GameManager.Instance.Phase = GamePhase.OutlinePass;
-        //if (other.tag == Tags.Ball)
-        //    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        GameManager.Instance.Phase = GamePhase.Wait;
+
+        StartCoroutine(GameManager.Instance.ToOutlinePass(Team, GoalPos));
     }
 }

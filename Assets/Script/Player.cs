@@ -110,6 +110,8 @@ public class Player : MonoBehaviour
             case GamePhase.OutlinePass:
                 OutlinePassUpdate();
                 break;
+            case GamePhase.Wait:
+                break; // wait에서는 암 것도 안함(상태 바뀌길 기다림)
         }
 	}
 
@@ -252,6 +254,12 @@ public class Player : MonoBehaviour
     {
         if (IsAutoMove)
             return true;
+
+        Vector3 nowPos = transform.position;
+
+        if (nowPos.x <= -XCut || nowPos.x >= XCut ||
+            nowPos.z <= -ZCut || nowPos.z >= ZCut)
+            return true; // 이미 필드 바깥으로 나가있는 경우 다시 안으로 들어올 수 있게 해주기 위함
 
         Vector3 CheckPosition = transform.position;
         Vector3 size = Collider.size * 0.5f;
@@ -598,6 +606,48 @@ public class Player : MonoBehaviour
     #region OutlinePass
     void OutlinePassUpdate()
     {
+        var owner = Ball.GetComponent<Ball>().Owner;
+
+        if (owner == null)
+            return;
+
+        if (owner == gameObject)
+        {
+            if (Input.GetButtonDown(Key.Pass(Team)))
+            {
+                Pass();
+                GameManager.Instance.Phase = GamePhase.InGame;
+            }
+            return;
+        }
+
+        if (IsPossessed)
+        {
+            Control();
+        }
+        else
+        {
+            AutoMove();
+        }
+    }
+
+    public void ToOutlinePos(int OwnTeam, Vector3 Pos)
+    {
+        if (OwnTeam != Team)
+            return;
+
+        IsPossessed = false;
+
+        if (Index == 0)
+        {
+            //패스 대상
+            Ball.GetComponent<Ball>().Owner = gameObject;
+            transform.position = Pos;
+        }
+        else if (Index == 1)
+        {
+            IsPossessed = true;
+        }
     }
     #endregion
 

@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: 524cbc5a6f1f14d4fa7bd7d62146fce3
-timeCreated: 1500899924
+guid: 1a9ed542a65130f46b41e5b7ca3c9a67
+timeCreated: 1500899903
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: Character_dunk_front_p2_0
-    21300002: Character_dunk_front_p2_1
-    21300004: Character_dunk_front_p2_2
-    21300006: Character_dunk_front_p2_3
+    21300000: Character_dunk_back_0
+    21300002: Character_dunk_back_1
+    21300004: Character_dunk_back_2
+    21300006: Character_dunk_back_3
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -79,7 +79,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Character_dunk_front_p2_0
+      name: Character_dunk_back_0
       rect:
         serializedVersion: 2
         x: 0
@@ -93,7 +93,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Character_dunk_front_p2_1
+      name: Character_dunk_back_1
       rect:
         serializedVersion: 2
         x: 50
@@ -107,7 +107,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Character_dunk_front_p2_2
+      name: Character_dunk_back_2
       rect:
         serializedVersion: 2
         x: 100
@@ -121,7 +121,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Character_dunk_front_p2_3
+      name: Character_dunk_back_3
       rect:
         serializedVersion: 2
         x: 150

@@ -162,6 +162,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Team: 1
+  GoalPos: {x: 0, y: 0, z: 0}
 --- !u!1 &88627524
 GameObject:
   m_ObjectHideFlags: 0
@@ -216,6 +217,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Team: 1
+  GoalPos: {x: 0, y: 0, z: 0}
 --- !u!1001 &107276648
 Prefab:
   m_ObjectHideFlags: 0
@@ -336,6 +338,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Team: 1
+  GoalPos: {x: 0, y: 0, z: 0}
 --- !u!4 &165075000 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4551007994841276, guid: 41251a2fd68a1ee47929b6b1b0cfdba8,
@@ -766,6 +769,11 @@ Prefab:
       value: 
       objectReference: {fileID: 21300000, guid: cbe669177aa619542936aa677dc9785e,
         type: 3}
+    - target: {fileID: 95768514441612468, guid: 41251a2fd68a1ee47929b6b1b0cfdba8,
+        type: 2}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 71d205fffbfa01d4ebbf78ecb348083b, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 41251a2fd68a1ee47929b6b1b0cfdba8, type: 2}
   m_IsPrefabParent: 0
@@ -1023,6 +1031,11 @@ Prefab:
       value: 
       objectReference: {fileID: 21300000, guid: cbe669177aa619542936aa677dc9785e,
         type: 3}
+    - target: {fileID: 95768514441612468, guid: 41251a2fd68a1ee47929b6b1b0cfdba8,
+        type: 2}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 71d205fffbfa01d4ebbf78ecb348083b, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 41251a2fd68a1ee47929b6b1b0cfdba8, type: 2}
   m_IsPrefabParent: 0
@@ -1156,6 +1169,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Team: 1
+  GoalPos: {x: 0, y: 0, z: 0}
 --- !u!1 &670846791
 GameObject:
   m_ObjectHideFlags: 0
@@ -1496,6 +1510,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Team: 0
+  GoalPos: {x: 0, y: 0, z: 0}
 --- !u!1001 &787657308
 Prefab:
   m_ObjectHideFlags: 0
@@ -1570,6 +1585,11 @@ Prefab:
       value: 
       objectReference: {fileID: 21300000, guid: cbe669177aa619542936aa677dc9785e,
         type: 3}
+    - target: {fileID: 95768514441612468, guid: 41251a2fd68a1ee47929b6b1b0cfdba8,
+        type: 2}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 71d205fffbfa01d4ebbf78ecb348083b, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 41251a2fd68a1ee47929b6b1b0cfdba8, type: 2}
   m_IsPrefabParent: 0
@@ -1708,6 +1728,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Team: 1
+  GoalPos: {x: 0, y: 0, z: 0}
 --- !u!1001 &945439131
 Prefab:
   m_ObjectHideFlags: 0
@@ -1913,6 +1934,11 @@ Prefab:
       value: 
       objectReference: {fileID: 21300000, guid: cbe669177aa619542936aa677dc9785e,
         type: 3}
+    - target: {fileID: 95768514441612468, guid: 41251a2fd68a1ee47929b6b1b0cfdba8,
+        type: 2}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 71d205fffbfa01d4ebbf78ecb348083b, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 41251a2fd68a1ee47929b6b1b0cfdba8, type: 2}
   m_IsPrefabParent: 0
@@ -2179,6 +2205,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Score: 0000000000000000
   TotalGameTime: 0
+--- !u!1 &1289171927
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1289171928}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1289171928
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1289171927}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3.62, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1406702608 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4551007994841276, guid: 41251a2fd68a1ee47929b6b1b0cfdba8,
@@ -2238,6 +2292,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Team: 1
+  GoalPos: {x: 0, y: 0, z: 0}
 --- !u!1 &1500688318
 GameObject:
   m_ObjectHideFlags: 0
@@ -2394,6 +2449,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Team: 1
+  GoalPos: {x: 0, y: 0, z: 0}
 --- !u!136 &1509853774
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2569,6 +2625,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Team: 1
+  GoalPos: {x: 0, y: 0, z: 0}
 --- !u!1 &1791122937
 GameObject:
   m_ObjectHideFlags: 0
@@ -2665,6 +2722,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Team: 1
+  GoalPos: {x: 0, y: 0, z: 0}
 --- !u!1 &1936510641
 GameObject:
   m_ObjectHideFlags: 0
@@ -2719,6 +2777,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Team: 1
+  GoalPos: {x: 0, y: 0, z: 0}
 --- !u!1001 &2047465210
 Prefab:
   m_ObjectHideFlags: 0
@@ -2819,6 +2878,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Team: 1
+  GoalPos: {x: 0, y: 0, z: 0}
 --- !u!1001 &2142857975
 Prefab:
   m_ObjectHideFlags: 0
@@ -2913,6 +2973,11 @@ Prefab:
       value: 
       objectReference: {fileID: 21300000, guid: cbe669177aa619542936aa677dc9785e,
         type: 3}
+    - target: {fileID: 95768514441612468, guid: 41251a2fd68a1ee47929b6b1b0cfdba8,
+        type: 2}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 71d205fffbfa01d4ebbf78ecb348083b, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 41251a2fd68a1ee47929b6b1b0cfdba8, type: 2}
   m_IsPrefabParent: 0

@@ -6,6 +6,8 @@ public class Ball : MonoBehaviour
 {
     Rigidbody Body;
     GameObject owner;
+    int RecentTeam = 0;
+    Vector3 prevPos;
 
     public GameObject Owner
     {
@@ -17,11 +19,18 @@ public class Ball : MonoBehaviour
         set
         {
             var prevOwner = owner;
+
             owner = value;
+
             if (prevOwner == null)
+            {
                 PlayerManager.InitAutoMove();
+            }
             else
+            {
                 prevOwner.GetComponent<Player>().ChangeToAutoMove();
+                RecentTeam = prevOwner.GetComponent<Player>().Team;
+            }
         }
     }
 
@@ -37,12 +46,47 @@ public class Ball : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        if (transform.position.x <= -XCut ||
-            transform.position.x >= XCut ||
-            transform.position.z <= -ZCut ||
-            transform.position.z >= ZCut)
+        if (GameManager.Instance.Phase != GamePhase.InGame)
+            return;
+
+        bool isOut = false;
+        var outlinePos = new Vector3();
+
+        if (prevPos.x >= -XCut && prevPos.x <= XCut &&
+            prevPos.z >= -ZCut && prevPos.z <= ZCut)
         {
-            GameManager.Instance.Phase = GamePhase.OutlinePass;
+            if (transform.position.x <= -XCut)
+            {
+                isOut = true;
+                outlinePos.x = -XCut - 0.1f;
+                outlinePos.z = transform.position.z;
+            }
+            else if (transform.position.x >= XCut)
+            {
+                isOut = true;
+                outlinePos.x = XCut + 0.1f;
+                outlinePos.z = transform.position.z;
+            }
+            else if (transform.position.z <= -ZCut)
+            {
+                isOut = true;
+                outlinePos.x = transform.position.x;
+                outlinePos.z = -ZCut - 0.1f;
+            }
+            else if (transform.position.z >= ZCut)
+            {
+                isOut = true;
+                outlinePos.x = transform.position.z;
+                outlinePos.z = ZCut + 0.1f;
+            }
         }
-	}
+
+        if (isOut)
+        {
+            GameManager.Instance.Phase = GamePhase.Wait;
+            StartCoroutine(GameManager.Instance.ToOutlinePass((RecentTeam + 1) % 2, outlinePos));
+        }
+
+        prevPos = transform.position;
+    }
 }
