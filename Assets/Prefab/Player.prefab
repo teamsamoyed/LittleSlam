@@ -135,6 +135,7 @@ MonoBehaviour:
   Hp: 0
   Speed: 1
   Jump: 65
+  DunkJump: 0
   PassTime: 0.5
   MaxPassDegree: 45
   DefaultPassSpeed: 1
@@ -142,6 +143,10 @@ MonoBehaviour:
   ShootMaxHoldTime: 0.75
   ShootX: 0.082
   ShootY: 0.422
+  FrontShootX: -0.0276
+  FrontShootY: 0.4076
+  BackShootX: 0.0177
+  BackShootY: 0.4074
   XCut: 3.58
   ZCut: 1.96
 --- !u!212 &212659650465698090
