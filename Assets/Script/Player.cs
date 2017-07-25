@@ -49,11 +49,16 @@ public class Player : MonoBehaviour
     float ShootHoldTime;
     bool WaitShootRelease;
     bool IsShootMotionEnded;
+    bool IsAction;
 
     PlayerState State = PlayerState.Move;
     AutoMoveState AutoState = AutoMoveState.Stay;
     float StayTime = 0.0f;
     Vector3 AutoGoal;
+
+    Vector3 PassStart;
+    Vector3 PassVelocity;
+    GameObject PassGoal;
 
     public float XCut;
     public float ZCut;
@@ -215,6 +220,9 @@ public class Player : MonoBehaviour
         if (!IsLanded)
             return;
 
+        if (IsAction)
+            return;
+
         var velocity = GetInputDirection();
 
         MoveTo(velocity, false);
@@ -335,6 +343,63 @@ public class Player : MonoBehaviour
     #region Pass
     void Pass(GameObject goal = null)
     {
+        if(goal == null)
+            goal = GetPassHandler();
+
+        PassGoal = goal;
+
+        Vector3 end;
+
+        if (goal != null)
+        {
+            PassStart = transform.position;
+            end = goal.transform.position;
+            var dir = end - PassStart;
+            dir.Normalize();
+            PassStart += dir * 0.15f;
+            PassStart.y += 0.12f;
+            end.y += 0.12f;
+        }
+        else
+        {
+            var dir = GetPassDirection();
+
+            //이 방향으로 기본 속도로 쏜다 그냥 그게 끝
+            PassStart = transform.position;
+            end = PassStart + dir * DefaultPassSpeed;
+            dir.Normalize();
+            PassStart += dir * 0.15f;
+            PassStart.y += 0.12f;
+            end.y += 0.12f;
+        }
+
+        Ani.SetBool("Front", false);
+        Ani.SetBool("Back", false);
+
+        PassVelocity = (end - PassStart) / PassTime - Physics.gravity * PassTime * 0.5f;
+
+        if (PassVelocity.x < 0.0f)
+        {
+            GetComponent<SpriteRenderer>().flipX = true;
+        }
+        else if (PassVelocity.x > 0.0f)
+        {
+            GetComponent<SpriteRenderer>().flipX = false;
+        }
+
+        Ani.SetTrigger("Pass");
+
+        if (PassVelocity.magnitude > MaxPassSpeed)
+        {
+            PassVelocity *= MaxPassSpeed / PassVelocity.magnitude;
+        }
+
+        IsAction = true;
+    }
+
+    void PassEnd()
+    {
+        IsAction = false;
         Ball.SetActive(true);
 
         //아군은 pass time동안은 못 움직임
@@ -349,48 +414,15 @@ public class Player : MonoBehaviour
             player.GetComponent<Player>().BlockTime = PassTime;
         }
 
-        if(goal == null)
-            GetPassHandler();
-
-        Vector3 start;
-        Vector3 end;
-
-        if (goal != null)
-        {
-            start = transform.position;
-            end = goal.transform.position;
-            var dir = end - start;
-            dir.Normalize();
-            start += dir * 0.15f;
-            start.y += 0.12f;
-            end.y += 0.12f;
-
-            IsPossessed = false;
-            goal.GetComponent<Player>().IsPossessed = true;
-        }
-        else
-        {
-            var dir = GetPassDirection();
-
-            //이 방향으로 기본 속도로 쏜다 그냥 그게 끝
-            start = transform.position;
-            end = start + dir * DefaultPassSpeed;
-            dir.Normalize();
-            start += dir * 0.15f;
-            start.y += 0.12f;
-            end.y += 0.12f;
-        }
-
-        var velocity = (end - start) / PassTime - Physics.gravity * PassTime * 0.5f;
-
-        if (velocity.magnitude > MaxPassSpeed)
-        {
-            velocity *= MaxPassSpeed / velocity.magnitude;
-        }
-
-        Ball.transform.position = start;
-        Ball.GetComponent<Rigidbody>().velocity = velocity;
+        Ani.ResetTrigger("Pass");
+        Ball.transform.position = PassStart;
+        Ball.GetComponent<Rigidbody>().velocity = PassVelocity;
         Ball.GetComponent<Ball>().Owner = null;
+
+        IsPossessed = false;
+
+        if(PassGoal!=null)
+            PassGoal.GetComponent<Player>().IsPossessed = true;
     }
 
     Vector3 GetPassDirection()
