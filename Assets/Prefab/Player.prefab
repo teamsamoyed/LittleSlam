@@ -212,6 +212,7 @@ MonoBehaviour:
   DefaultPassSpeed: 1
   MaxPassSpeed: 3.5
   ShootMaxHoldTime: 0.75
+  StealRange: 0.3
   ShootX: 0.082
   ShootY: 0.422
   FrontShootX: -0.0276

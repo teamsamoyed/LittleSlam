@@ -36,14 +36,6 @@ public class Key
             return "Down2";
     }
 
-    public static string Jump(int UserIdx)
-    {
-        if (UserIdx == 0)
-            return "Jump1";
-        else
-            return "Jump2";
-    }
-
     public static string TabPlayer(int UserIdx)
     {
         if (UserIdx == 0)
@@ -55,16 +47,26 @@ public class Key
     public static string Pass(int UserIdx)
     {
         if (UserIdx == 0)
-            return "Pass1";
+            return "Pass/Steal1";
         else
-            return "Pass2";
+            return "Pass/Steal2";
     }
 
     public static string Shoot(int UserIdx)
     {
         if (UserIdx == 0)
-            return "Shoot1";
+            return "Shoot/Block1";
         else
-            return "Shoot2";
+            return "Shoot/Block2";
+    }
+
+    public static string Steal(int UserIdx)
+    {
+        return Pass(UserIdx);
+    }
+
+    public static string Block(int UserIdx)
+    {
+        return Shoot(UserIdx);
     }
 }

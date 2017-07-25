@@ -38,6 +38,7 @@ public class Player : MonoBehaviour
     public float DefaultPassSpeed;
     public float MaxPassSpeed;
     public float ShootMaxHoldTime;
+    public float StealRange;
 
     public float ShootX;
     public float ShootY;
@@ -154,64 +155,120 @@ public class Player : MonoBehaviour
 
         if (Ball.GetComponent<Ball>().Owner == gameObject)
         {
-            if (Input.GetButtonDown(Key.Pass(Team)))
+            OwnerControl();
+        }
+        else
+        {
+            NonOwnerControl();
+        }
+    }
+
+    void OwnerControl()
+    {
+        Ball.transform.position = transform.position;
+
+        if (Input.GetButtonDown(Key.Pass(Team)))
+        {
+            Pass();
+        }
+
+        if (Input.GetButtonDown(Key.Shoot(Team)))
+        {
+            State = PlayerState.Shoot;
+            Ani.ResetTrigger("Shoot");
+            Ani.ResetTrigger("ShootEnd");
+            WaitShootRelease = true;
+            IsShootMotionEnded = false;
+            ShootHoldTime = 0.0f;
+
+            var goalposts = GameObject.FindGameObjectsWithTag(Tags.Goalpost);
+
+            GameObject goal = null;
+
+            foreach (var goalpost in goalposts)
             {
-                Pass();
+                if (goalpost.GetComponent<Goalpost>().Team != Team)
+                {
+                    goal = goalpost;
+                    break;
+                }
             }
 
-            if (Input.GetButtonDown(Key.Shoot(Team)))
+            var startPos = transform.position;
+            var dir = goal.transform.position - startPos;
+
+            if (Mathf.Abs(dir.x) * 4 < Mathf.Abs(dir.z))
             {
-                State = PlayerState.Shoot;
-                Ani.ResetTrigger("Shoot");
-                Ani.ResetTrigger("ShootEnd");
-                WaitShootRelease = true;
-                IsShootMotionEnded = false;
-                ShootHoldTime = 0.0f;
-
-                var goalposts = GameObject.FindGameObjectsWithTag(Tags.Goalpost);
-
-                GameObject goal = null;
-
-                foreach (var goalpost in goalposts)
+                if (dir.z < 0.0f)
                 {
-                    if (goalpost.GetComponent<Goalpost>().Team != Team)
-                    {
-                        goal = goalpost;
-                        break;
-                    }
+                    Ani.SetBool("Front", true);
+                    Ani.SetBool("Back", false);
                 }
-
-                var startPos = transform.position;
-                var dir = goal.transform.position - startPos;
-
-                if (Mathf.Abs(dir.x) * 4 < Mathf.Abs(dir.z))
-                {
-                    if (dir.z < 0.0f)
-                    {
-                        Ani.SetBool("Front", true);
-                        Ani.SetBool("Back", false);
-                    }
-                    else if (dir.z > 0.0f)
-                    {
-                        Ani.SetBool("Front", false);
-                        Ani.SetBool("Back", true);
-                    }
-
-                    GetComponent<SpriteRenderer>().flipX = false;
-                }
-                else
+                else if (dir.z > 0.0f)
                 {
                     Ani.SetBool("Front", false);
-                    Ani.SetBool("Back", false);
-
-                    if (goal.transform.position.x < startPos.x)
-                        GetComponent<SpriteRenderer>().flipX = true;
-                    else
-                        GetComponent<SpriteRenderer>().flipX = false;
+                    Ani.SetBool("Back", true);
                 }
 
-                Ani.SetTrigger("Shoot");
+                GetComponent<SpriteRenderer>().flipX = false;
             }
+            else
+            {
+                Ani.SetBool("Front", false);
+                Ani.SetBool("Back", false);
+
+                if (goal.transform.position.x < startPos.x)
+                    GetComponent<SpriteRenderer>().flipX = true;
+                else
+                    GetComponent<SpriteRenderer>().flipX = false;
+            }
+
+            Ani.SetTrigger("Shoot");
+        }
+    }
+
+    void StealCheck()
+    {
+        if (Ball.GetComponent<Ball>().Owner == null)
+            return;
+
+        var distance = Vector3.Distance(transform.position,
+            Ball.transform.position);
+
+        if (distance < StealRange)
+        {
+            Ball.GetComponent<Ball>().Owner = gameObject;
+        }
+    }
+
+    void StealEnd()
+    {
+        Ani.ResetTrigger("Steal");
+        IsAction = false;
+    }
+
+    void NonOwnerControl()
+    {
+        if (IsAction)
+            return;
+
+        if (Input.GetButtonDown(Key.Steal(Team)))
+        {
+            Ani.SetTrigger("Steal");
+            IsAction = true;
+
+            if (Ball.transform.position.x > transform.position.x)
+            {
+                GetComponent<SpriteRenderer>().flipX = false;
+            }
+            else
+            {
+                GetComponent<SpriteRenderer>().flipX = true;
+            }
+        }
+
+        if (Input.GetButtonDown(Key.Block(Team)))
+        {
         }
     }
 
@@ -419,10 +476,11 @@ public class Player : MonoBehaviour
         Ball.GetComponent<Rigidbody>().velocity = PassVelocity;
         Ball.GetComponent<Ball>().Owner = null;
 
-        IsPossessed = false;
-
-        if(PassGoal!=null)
+        if (PassGoal != null)
+        {
+            IsPossessed = false;
             PassGoal.GetComponent<Player>().IsPossessed = true;
+        }
     }
 
     Vector3 GetPassDirection()
@@ -647,6 +705,9 @@ public class Player : MonoBehaviour
         AutoState = AutoMoveState.Move;
     }
 
+    #endregion
+
+    #region Steal
     #endregion
 
     #endregion
