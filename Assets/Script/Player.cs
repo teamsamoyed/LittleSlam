@@ -183,21 +183,21 @@ public class Player : MonoBehaviour
                 {
                     if (dir.z < 0.0f)
                     {
-                        Ani.SetBool("FrontShoot", true);
-                        Ani.SetBool("BackShoot", false);
+                        Ani.SetBool("Front", true);
+                        Ani.SetBool("Back", false);
                     }
                     else if (dir.z > 0.0f)
                     {
-                        Ani.SetBool("FrontShoot", false);
-                        Ani.SetBool("BackShoot", true);
+                        Ani.SetBool("Front", false);
+                        Ani.SetBool("Back", true);
                     }
 
                     GetComponent<SpriteRenderer>().flipX = false;
                 }
                 else
                 {
-                    Ani.SetBool("FrontShoot", false);
-                    Ani.SetBool("BackShoot", false);
+                    Ani.SetBool("Front", false);
+                    Ani.SetBool("Back", false);
 
                     if (goal.transform.position.x < startPos.x)
                         GetComponent<SpriteRenderer>().flipX = true;
@@ -304,12 +304,27 @@ public class Player : MonoBehaviour
 
         if (direction.x < 0.0f)
         {
+            Ani.SetBool("Back", false);
+            Ani.SetBool("Front", false);
             GetComponent<SpriteRenderer>().flipX = true;
         }
         else if (direction.x > 0.0f)
         {
+            Ani.SetBool("Back", false);
+            Ani.SetBool("Front", false);
             GetComponent<SpriteRenderer>().flipX = false;
         }
+        else if (direction.z > 0.0f)
+        {
+            Ani.SetBool("Back", true);
+            Ani.SetBool("Front", false);
+        }
+        else if (direction.z < 0.0f)
+        {
+            Ani.SetBool("Back", false);
+            Ani.SetBool("Front", true);
+        }
+
         if (!CanMove(direction, IsAutoMove))
             return;
 
@@ -478,12 +493,12 @@ public class Player : MonoBehaviour
 
         var startPos = transform.position;
 
-        if (Ani.GetBool("FrontShoot"))
+        if (Ani.GetBool("Front"))
         {
             startPos.x += FrontShootX;
             startPos.y += FrontShootY;
         }
-        else if (Ani.GetBool("BackShoot"))
+        else if (Ani.GetBool("Back"))
         {
             startPos.x += BackShootX;
             startPos.y += BackShootY;
@@ -603,7 +618,6 @@ public class Player : MonoBehaviour
     #endregion
 
     #endregion
-
 
     #region OutlinePass
     void OutlinePassUpdate()
