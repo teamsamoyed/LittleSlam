@@ -47,6 +47,8 @@ public class Player : MonoBehaviour
     public float BackShootX;
     public float BackShootY;
 
+    public float ThreePointDistance;
+
     float ShootHoldTime;
     bool WaitShootRelease;
     bool IsShootMotionEnded;
@@ -250,6 +252,11 @@ public class Player : MonoBehaviour
     void NonOwnerControl()
     {
         if (IsAction)
+            return;
+
+        var owner = Ball.GetComponent<Ball>().Owner;
+
+        if (owner != null && owner.GetComponent<Player>().Team == Team)
             return;
 
         if (Input.GetButtonDown(Key.Steal(Team)))
@@ -619,6 +626,15 @@ public class Player : MonoBehaviour
         Ball.SetActive(true);
         Ball.transform.position = startPos;
         Ball.GetComponent<Ball>().Owner = null;
+
+        var xzPos = new Vector2(transform.position.x, transform.position.z);
+        var xzGoal = new Vector2(goal.transform.position.x, goal.transform.position.z);
+
+        if (Vector2.Distance(xzPos, xzGoal) < ThreePointDistance)
+            Ball.GetComponent<Ball>().Score = 2;
+        else
+            Ball.GetComponent<Ball>().Score = 3;
+
         Ball.GetComponent<Rigidbody>().velocity = dir;
     }
 
@@ -725,7 +741,6 @@ public class Player : MonoBehaviour
             if (Input.GetButtonDown(Key.Pass(Team)))
             {
                 Pass(PlayerManager.GetPlayer(Team, 1));
-                GameManager.Instance.Phase = GamePhase.InGame;
             }
             return;
         }
@@ -750,6 +765,7 @@ public class Player : MonoBehaviour
         if (Index == 0)
         {
             //패스 대상
+            Ball.SetActive(false);
             Ball.GetComponent<Ball>().Owner = gameObject;
             transform.position = Pos;
         }

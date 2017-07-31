@@ -62,6 +62,12 @@ public class GameManager : MonoBehaviour
         }
 	}
 
+    public void OutlinePass(int OwnTeam, Vector3 Pos)
+    {
+        Phase = GamePhase.Wait;
+        StartCoroutine(ToOutlinePass(OwnTeam, Pos));
+    }
+
     IEnumerator Restart()
     {
         yield return new WaitForSeconds(2.0f);
@@ -69,7 +75,7 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    public IEnumerator ToOutlinePass(int OwnTeam, Vector3 Pos)
+    IEnumerator ToOutlinePass(int OwnTeam, Vector3 Pos)
     {
         yield return new WaitForSeconds(2.0f);
 

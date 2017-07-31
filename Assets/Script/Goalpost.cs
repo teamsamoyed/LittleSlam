@@ -13,9 +13,14 @@ public class Goalpost : MonoBehaviour
         if (GameManager.Instance.Phase != GamePhase.InGame)
             return;
 
-        GameManager.Instance.Score[(Team + 1) % 2] += 2;
+        var ball = other.GetComponent<Ball>();
+
+        if (ball == null)
+            return;
+
+        GameManager.Instance.Score[(Team + 1) % 2] += ball.Score;
         GameManager.Instance.Phase = GamePhase.Wait;
 
-        StartCoroutine(GameManager.Instance.ToOutlinePass(Team, GoalPos));
+        GameManager.Instance.OutlinePass(Team, GoalPos);
     }
 }

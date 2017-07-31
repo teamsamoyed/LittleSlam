@@ -42,6 +42,8 @@ public class Ball : MonoBehaviour
     public float XCut;
     public float ZCut;
 
+    public int Score = 2;
+
 	// Use this for initialization
 	void Start ()
     {
@@ -85,7 +87,7 @@ public class Ball : MonoBehaviour
         if (isOut)
         {
             GameManager.Instance.Phase = GamePhase.Wait;
-            StartCoroutine(GameManager.Instance.ToOutlinePass((RecentTeam + 1) % 2, outlinePos));
+            GameManager.Instance.OutlinePass((RecentTeam + 1) % 2, outlinePos);
         }
 
         prevPos = transform.position;
