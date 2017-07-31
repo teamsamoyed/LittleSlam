@@ -219,6 +219,7 @@ MonoBehaviour:
   FrontShootY: 0.4076
   BackShootX: 0.0177
   BackShootY: 0.4074
+  ThreePointDistance: 1.7
   XCut: 3.58
   ZCut: 1.96
 --- !u!212 &212069222649072118

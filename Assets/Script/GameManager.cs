@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
 
     public int[] Score = new int[2];
     public float TotalGameTime;
-    float RemainGameTime;
+    public float RemainGameTime;
     public GamePhase Phase
     {
         get
