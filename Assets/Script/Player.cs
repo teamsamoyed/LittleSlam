@@ -6,12 +6,13 @@ enum PlayerState
 {
     Move,
     Shoot,
+    Block
 }
 
 enum AutoMoveState
 {
     Stay,
-    Move,
+    Move
 }
 
 public class Player : MonoBehaviour
@@ -53,6 +54,7 @@ public class Player : MonoBehaviour
     bool WaitShootRelease;
     bool IsShootMotionEnded;
     bool IsAction;
+    bool IsBlockMotionEnded;
 
     PlayerState State = PlayerState.Move;
     AutoMoveState AutoState = AutoMoveState.Stay;
@@ -65,6 +67,8 @@ public class Player : MonoBehaviour
 
     public float XCut;
     public float ZCut;
+
+    public bool IsBlock;
 
     GameObject Indicator;
 
@@ -94,6 +98,11 @@ public class Player : MonoBehaviour
 
         Ani.SetBool("Landing", IsLanded);
         Ani.SetBool("OwnBall", Ball.GetComponent<Ball>().Owner == gameObject);
+
+        if (IsBlock && Body.velocity.y < 0.0f)
+        {
+            Ani.SetTrigger("BlockEnd");
+        }
 
         if (BlockInput)
         {
@@ -146,6 +155,9 @@ public class Player : MonoBehaviour
                 break;
             case PlayerState.Shoot:
                 ShootControl();
+                break;
+            case PlayerState.Block:
+                BlockControl();
                 break;
         }
     }
@@ -276,6 +288,43 @@ public class Player : MonoBehaviour
 
         if (Input.GetButtonDown(Key.Block(Team)))
         {
+            Ani.SetTrigger("Block");
+            State = PlayerState.Block;
+            IsAction = true;
+
+            if (Ball.transform.position.x > transform.position.x)
+            {
+                GetComponent<SpriteRenderer>().flipX = false;
+            }
+            else
+            {
+                GetComponent<SpriteRenderer>().flipX = true;
+            }
+        }
+    }
+
+    void BlockRelease()
+    {
+        IsBlock = true;
+        Body.AddForce(0.0f, Jump, 0.0f);
+    }
+
+    void BlockEnd()
+    {
+        IsBlock = false;
+        IsBlockMotionEnded = true;
+    }
+
+    void BlockControl()
+    {
+        if (IsBlockMotionEnded && IsLanded)
+        {
+            State = PlayerState.Move;
+
+            Ani.ResetTrigger("Block");
+            Ani.ResetTrigger("BlockEnd");
+            IsAction = false;
+            IsBlockMotionEnded = false;
         }
     }
 
@@ -789,25 +838,36 @@ public class Player : MonoBehaviour
             return;
         }
 
-        //ball 소유하기
-        Ball.GetComponent<Ball>().Owner = gameObject;
-        Ball.SetActive(false);
-
-        if (!IsPossessed)
+        if (State == PlayerState.Move && !IsAction)
         {
-            var players = GameObject.FindGameObjectsWithTag(Tags.Player);
+            //ball 소유하기
+            Ball.GetComponent<Ball>().Owner = gameObject;
+            Ball.SetActive(false);
 
-            foreach (var player in players)
+            if (!IsPossessed)
             {
-                if (player.GetComponent<Player>().Team != Team)
+                var players = GameObject.FindGameObjectsWithTag(Tags.Player);
+
+                foreach (var player in players)
                 {
-                    continue;
+                    if (player.GetComponent<Player>().Team != Team)
+                    {
+                        continue;
+                    }
+
+                    player.GetComponent<Player>().IsPossessed = false;
                 }
 
-                player.GetComponent<Player>().IsPossessed = false;
+                IsPossessed = true;
             }
+        }
+        else if (State == PlayerState.Block && IsBlock)
+        {
+            //공을 날아오는 반대편으로 쳐낸다
+            var vel = Ball.GetComponent<Rigidbody>().velocity;
+            var inverseVel = new Vector3(-vel.x, -Mathf.Abs(vel.y), -vel.z);
 
-            IsPossessed = true;
+            Ball.GetComponent<Rigidbody>().velocity = inverseVel;
         }
     }
 

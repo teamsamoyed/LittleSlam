@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-    Rigidbody Body;
     GameObject owner;
     int RecentTeam = 0;
-    Vector3 prevPos;
+    public Rigidbody Body;
 
     public GameObject Owner
     {
@@ -44,11 +43,10 @@ public class Ball : MonoBehaviour
 
     public int Score = 2;
 
-	// Use this for initialization
-	void Start ()
+    void Start()
     {
         Body = GetComponent<Rigidbody>();
-	}
+    }
 
     // Update is called once per frame
     void Update()
@@ -89,7 +87,5 @@ public class Ball : MonoBehaviour
             GameManager.Instance.Phase = GamePhase.Wait;
             GameManager.Instance.OutlinePass((RecentTeam + 1) % 2, outlinePos);
         }
-
-        prevPos = transform.position;
     }
 }

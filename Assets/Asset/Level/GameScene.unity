@@ -3078,6 +3078,7 @@ MonoBehaviour:
   ThreePointDistance: 0
   XCut: 3.58
   ZCut: 1.96
+  IsBlock: 0
 --- !u!212 &1956833008
 SpriteRenderer:
   m_ObjectHideFlags: 0
