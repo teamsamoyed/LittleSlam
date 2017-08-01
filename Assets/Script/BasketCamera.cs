@@ -30,7 +30,13 @@ public class BasketCamera : MonoBehaviour
         var newPosition = transform.position;
         var follower = GetFollower();
 
-        newPosition.x = Mathf.Clamp(follower.transform.position.x, MinX, MaxX);
+        if (newPosition.x < follower.transform.position.x - 0.3f)
+            newPosition.x = follower.transform.position.x - 0.3f;
+
+        if (newPosition.x > follower.transform.position.x + 0.3f)
+            newPosition.x = follower.transform.position.x + 0.3f;
+
+        newPosition.x = Mathf.Clamp(newPosition.x, MinX, MaxX);
         var fy = follower.transform.position.y;
 
         if (!Ball.activeSelf)
