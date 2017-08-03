@@ -205,9 +205,11 @@ MonoBehaviour:
   Index: 0
   Hp: 0
   Speed: 1
-  Jump: 65
+  Jump: 55
   DunkJump: 0
   PassTime: 0.5
+  BlockJump: 70
+  BlockPower: 0.1
   MaxPassDegree: 45
   DefaultPassSpeed: 1
   MaxPassSpeed: 3.5
@@ -222,6 +224,7 @@ MonoBehaviour:
   ThreePointDistance: 1.7
   XCut: 3.58
   ZCut: 1.96
+  IsBlock: 0
 --- !u!212 &212069222649072118
 SpriteRenderer:
   m_ObjectHideFlags: 1

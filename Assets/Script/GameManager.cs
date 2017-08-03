@@ -15,7 +15,7 @@ public enum GamePhase
 
 public class GameManager : MonoBehaviour
 {
-    public GamePhase phase = GamePhase.InGame;
+    public GamePhase phase = GamePhase.BallGetting;
 
     public int[] Score = new int[2];
     public float TotalGameTime;
@@ -38,8 +38,6 @@ public class GameManager : MonoBehaviour
 
     public static GameManager Instance;
 
-    GameObject Ball;
-
 	// Use this for initialization
 	void Awake ()
     {
@@ -54,6 +52,10 @@ public class GameManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
+        if (Phase == GamePhase.BallGetting ||
+            Phase == GamePhase.Wait)
+            return;
+
         RemainGameTime -= Time.deltaTime;
 
         if (RemainGameTime <= 0.0f)

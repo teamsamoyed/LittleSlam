@@ -27,6 +27,9 @@ public class Player : MonoBehaviour
     public float Jump;
     public float DunkJump;
     public float PassTime;
+    public float BlockJump;
+    public float BlockPower;
+
     GameObject Ball;
     GameObject Floor;
     Animator Ani;
@@ -116,6 +119,7 @@ public class Player : MonoBehaviour
         switch (GameManager.Instance.Phase)
         {
             case GamePhase.BallGetting:
+                BallGettingUpdate();
                 break;
             case GamePhase.FreeDraw:
                 break;
@@ -131,6 +135,39 @@ public class Player : MonoBehaviour
                 break; // wait에서는 암 것도 안함(상태 바뀌길 기다림)
         }
 	}
+    #region BallGetting
+
+    void BallGettingUpdate()
+    {
+        if (!IsPossessed)
+            return;
+
+        switch (State)
+        {
+            case PlayerState.Move:
+                if (Input.GetButtonDown(Key.Block(Team)))
+                {
+                    Ani.SetTrigger("Block");
+                    State = PlayerState.Block;
+                    IsAction = true;
+
+                    if (Ball.transform.position.x > transform.position.x)
+                    {
+                        GetComponent<SpriteRenderer>().flipX = false;
+                    }
+                    else
+                    {
+                        GetComponent<SpriteRenderer>().flipX = true;
+                    }
+                }
+                break;
+            case PlayerState.Block:
+                BlockControl();
+                break;
+        }
+    }
+
+    #endregion
 
     #region InGame
 
@@ -306,7 +343,7 @@ public class Player : MonoBehaviour
     void BlockRelease()
     {
         IsBlock = true;
-        Body.AddForce(0.0f, Jump, 0.0f);
+        Body.AddForce(0.0f, BlockJump, 0.0f);
     }
 
     void BlockEnd()
@@ -835,36 +872,51 @@ public class Player : MonoBehaviour
             return;
         }
 
-        if (State == PlayerState.Move && !IsAction)
+        if (GameManager.Instance.Phase == GamePhase.InGame)
         {
-            //ball 소유하기
-            Ball.GetComponent<Ball>().Owner = gameObject;
-            Ball.SetActive(false);
-
-            if (!IsPossessed)
+            if (State == PlayerState.Move && !IsAction)
             {
-                var players = GameObject.FindGameObjectsWithTag(Tags.Player);
+                //ball 소유하기
+                Ball.GetComponent<Ball>().Owner = gameObject;
+                Ball.SetActive(false);
 
-                foreach (var player in players)
+                if (!IsPossessed)
                 {
-                    if (player.GetComponent<Player>().Team != Team)
+                    var players = GameObject.FindGameObjectsWithTag(Tags.Player);
+
+                    foreach (var player in players)
                     {
-                        continue;
+                        if (player.GetComponent<Player>().Team != Team)
+                        {
+                            continue;
+                        }
+
+                        player.GetComponent<Player>().IsPossessed = false;
                     }
 
-                    player.GetComponent<Player>().IsPossessed = false;
+                    IsPossessed = true;
+                }
+            }
+            else if (State == PlayerState.Block && IsBlock)
+            {
+                //공을 날아오는 반대편으로 쳐낸다
+                var vel = Ball.GetComponent<Rigidbody>().velocity;
+                var inverseVel = new Vector3(-vel.x, 0.0f, -vel.z);
+
+                if (GetComponent<SpriteRenderer>().flipX)
+                {
+                    inverseVel.x -= BlockPower;
+                }
+                else
+                {
+                    inverseVel.x += BlockPower;
                 }
 
-                IsPossessed = true;
+                Ball.GetComponent<Rigidbody>().velocity = inverseVel;
             }
         }
-        else if (State == PlayerState.Block && IsBlock)
+        else // Ball Getting - 처음 시작할 때 레프리 던지는 거 칠 때
         {
-            //공을 날아오는 반대편으로 쳐낸다
-            var vel = Ball.GetComponent<Rigidbody>().velocity;
-            var inverseVel = new Vector3(-vel.x, -Mathf.Abs(vel.y), -vel.z);
-
-            Ball.GetComponent<Rigidbody>().velocity = inverseVel;
         }
     }
 

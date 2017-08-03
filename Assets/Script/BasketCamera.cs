@@ -30,6 +30,9 @@ public class BasketCamera : MonoBehaviour
         var newPosition = transform.position;
         var follower = GetFollower();
 
+        if (follower == null)
+            return;
+
         if (newPosition.x < follower.transform.position.x - 0.3f)
             newPosition.x = follower.transform.position.x - 0.3f;
 
@@ -37,18 +40,26 @@ public class BasketCamera : MonoBehaviour
             newPosition.x = follower.transform.position.x + 0.3f;
 
         newPosition.x = Mathf.Clamp(newPosition.x, MinX, MaxX);
-        var fy = follower.transform.position.y;
 
-        if (!Ball.activeSelf)
-            fy += 0.2f;
-
-        if (fy > YCut)
+        if (GameManager.Instance.Phase == GamePhase.BallGetting)
         {
-            newPosition.y = StartY + fy - YCut;
+            newPosition.y = StartY;
         }
         else
         {
-            newPosition.y = StartY;
+            var fy = follower.transform.position.y;
+
+            if (!Ball.activeSelf)
+                fy += 0.2f;
+
+            if (fy > YCut)
+            {
+                newPosition.y = StartY + fy - YCut;
+            }
+            else
+            {
+                newPosition.y = StartY;
+            }
         }
 
         var delta = newPosition - transform.position;
