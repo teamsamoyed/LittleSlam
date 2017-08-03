@@ -763,9 +763,6 @@ public class Player : MonoBehaviour
 
     public void ChangeToAutoMove()
     {
-        if (AutoState == AutoMoveState.Stay)
-            return;
-
         InitAutoGoal();
         AutoState = AutoMoveState.Move;
     }

@@ -21,7 +21,8 @@ public class Ball : MonoBehaviour
 
             owner = value;
 
-            if (prevOwner == null)
+            if (prevOwner == null ||
+               (owner != null && prevOwner != null && owner.GetComponent<Player>().Team != prevOwner.GetComponent<Player>().Team))
             {
                 PlayerManager.InitAutoMove();
             }
