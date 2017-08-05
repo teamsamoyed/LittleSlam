@@ -30,6 +30,7 @@ public class Player : MonoBehaviour
     public float BlockJump;
     public float BlockPower;
     public float BlockHead;
+    public float PasslineRange;
 
     GameObject Ball;
     GameObject Floor;
@@ -885,21 +886,93 @@ public class Player : MonoBehaviour
 
     public void ToOutlinePos(int OwnTeam, Vector3 Pos)
     {
-        if (OwnTeam != Team)
-            return;
+        if(Team == OwnTeam)
+            IsPossessed = false;
 
-        IsPossessed = false;
-
-        if (Index == 0)
+        if (Team == OwnTeam && Index == 0)
         {
             //패스 대상
             Ball.SetActive(false);
             Ball.GetComponent<Ball>().Owner = gameObject;
             transform.position = Pos;
+
+            if (Pos.z >= Ball.GetComponent<Ball>().ZCut)
+            {
+                Ani.SetBool("Front", false);
+                Ani.SetBool("Back", true);
+
+                GetComponent<SpriteRenderer>().flipX = false;
+            }
+            else if (Pos.z <= -Ball.GetComponent<Ball>().ZCut)
+            {
+
+                Ani.SetBool("Front", true);
+                Ani.SetBool("Back", false);
+
+                GetComponent<SpriteRenderer>().flipX = false;
+            }
+            else if (Pos.x < 0.0f)
+            {
+                GetComponent<SpriteRenderer>().flipX = false;
+            }
+            else
+            {
+                GetComponent<SpriteRenderer>().flipX = true;
+            }
         }
-        else if (Index == 1)
+        else 
         {
-            IsPossessed = true;
+            if (Index == 1 && Team == OwnTeam)
+            {
+                IsPossessed = true;
+            }
+            float minX, maxX;
+            float minZ, maxZ;
+
+            //적절히 근처 랜덤한 위치로 보내기
+            if (Pos.z >= Ball.GetComponent<Ball>().ZCut)
+            {
+                minX = transform.position.x - PasslineRange;
+                maxX = transform.position.x + PasslineRange;
+
+                minZ = Ball.GetComponent<Ball>().ZCut - PasslineRange;
+                maxZ = Ball.GetComponent<Ball>().ZCut - 0.1f;
+            }
+            else if (Pos.z <= -Ball.GetComponent<Ball>().ZCut)
+            {
+                minX = transform.position.x - PasslineRange;
+                maxX = transform.position.x + PasslineRange;
+
+                minZ = -Ball.GetComponent<Ball>().ZCut + 0.1f;
+                maxZ = -Ball.GetComponent<Ball>().ZCut + PasslineRange;
+            }
+            else if (Pos.x < 0.0f)
+            {
+                minX = -Ball.GetComponent<Ball>().XCut + 0.1f;
+                maxX = -Ball.GetComponent<Ball>().XCut + PasslineRange;
+
+                minZ = transform.position.z - PasslineRange;
+                maxZ = transform.position.z + PasslineRange;
+            }
+            else
+            {
+                minX = Ball.GetComponent<Ball>().XCut - PasslineRange;
+                maxX = Ball.GetComponent<Ball>().XCut - 0.1f;
+
+                minZ = transform.position.z - PasslineRange;
+                maxZ = transform.position.z + PasslineRange;
+            }
+
+            minX = Mathf.Max(minX, -Ball.GetComponent<Ball>().XCut);
+            maxX = Mathf.Min(maxX, Ball.GetComponent<Ball>().XCut);
+            minZ = Mathf.Max(minZ, -Ball.GetComponent<Ball>().ZCut);
+            maxZ = Mathf.Min(maxZ, Ball.GetComponent<Ball>().ZCut);
+
+            Vector3 newPosition = transform.position;
+            newPosition.x = Random.Range(minX, maxX);
+            newPosition.z = Random.Range(minZ, maxZ);
+
+            transform.position = newPosition;
         }
     }
     #endregion
