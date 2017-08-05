@@ -31,11 +31,6 @@ public class Ball : MonoBehaviour
                 prevOwner.GetComponent<Player>().ChangeToAutoMove();
                 RecentTeam = prevOwner.GetComponent<Player>().Team;
             }
-
-            if (owner != null && GameManager.Instance.Phase == GamePhase.OutlinePass)
-            {
-                GameManager.Instance.Phase = GamePhase.InGame;
-            }
         }
     }
 
@@ -43,6 +38,8 @@ public class Ball : MonoBehaviour
     public float ZCut;
 
     public int Score = 2;
+
+    public bool BallGettingEnd;
 
     void Start()
     {
@@ -87,6 +84,15 @@ public class Ball : MonoBehaviour
         {
             GameManager.Instance.Phase = GamePhase.Wait;
             GameManager.Instance.OutlinePass((RecentTeam + 1) % 2, outlinePos);
+        }
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (!BallGettingEnd)
+        {
+            BallGettingEnd = true;
+            GameManager.Instance.Phase = GamePhase.InGame;
         }
     }
 }

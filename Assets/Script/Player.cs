@@ -29,6 +29,7 @@ public class Player : MonoBehaviour
     public float PassTime;
     public float BlockJump;
     public float BlockPower;
+    public float BlockHead;
 
     GameObject Ball;
     GameObject Floor;
@@ -163,7 +164,45 @@ public class Player : MonoBehaviour
                 break;
             case PlayerState.Block:
                 BlockControl();
+                BallGettingBlockUpdate();
                 break;
+        }
+    }
+
+    void BallGettingBlockUpdate()
+    {
+        if (Ball.transform.position.y  < transform.position.y + BlockHead)
+        {
+            //아군 쪽으로 패스
+            //인덱스 1 or 2로 보낸다.
+            Ani.SetTrigger("BlockEnd");
+            GameManager.Instance.Phase = GamePhase.InGame;
+
+            int goalIndex = Random.Range(1, 3);
+
+            GameObject goal = null;
+
+            var players = GameObject.FindGameObjectsWithTag(Tags.Player);
+
+            foreach (var player in players)
+            {
+                if (player.GetComponent<Player>().Team == Team &&
+                    player.GetComponent<Player>().Index == goalIndex)
+                {
+                    goal = player;
+                    break;
+                }
+            }
+
+            var dir = goal.transform.position - Ball.transform.position;
+            dir.y += BlockHead;
+            dir.Normalize();
+            dir *= 2;
+
+            Ball.GetComponent<Rigidbody>().velocity = dir;
+
+            IsPossessed = false;
+            goal.GetComponent<Player>().IsPossessed = true;
         }
     }
 
@@ -730,6 +769,11 @@ public class Player : MonoBehaviour
 
     void AutoMove()
     {
+        if (!IsLanded)
+        {
+            return;
+        }
+
         if (Ball.GetComponent<Ball>().Owner == null)
         {
             MoveTo(Vector3.zero, true);
@@ -824,6 +868,7 @@ public class Player : MonoBehaviour
             if (Input.GetButtonDown(Key.Pass(Team)))
             {
                 Pass(PlayerManager.GetPlayer(Team, 1));
+                GameManager.Instance.Phase = GamePhase.InGame;
             }
             return;
         }

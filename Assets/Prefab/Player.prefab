@@ -210,6 +210,7 @@ MonoBehaviour:
   PassTime: 0.5
   BlockJump: 70
   BlockPower: 0.1
+  BlockHead: 0.377
   MaxPassDegree: 45
   DefaultPassSpeed: 1
   MaxPassSpeed: 3.5
