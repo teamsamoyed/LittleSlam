@@ -36,6 +36,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public GameObject ResultUI;
+
     public static GameManager Instance;
 
 	// Use this for initialization
@@ -56,11 +58,15 @@ public class GameManager : MonoBehaviour
             Phase == GamePhase.Wait)
             return;
 
-        RemainGameTime -= Time.deltaTime;
-
-        if (RemainGameTime <= 0.0f)
+        if (RemainGameTime <= 0.0f && Phase != GamePhase.GameEnd)
         {
             Phase = GamePhase.GameEnd;
+            ResultUI.SetActive(true);
+            StartCoroutine(EndGame());
+        }
+        else
+        {
+            RemainGameTime -= Time.deltaTime;
         }
 	}
 
@@ -90,5 +96,12 @@ public class GameManager : MonoBehaviour
         }
 
         Phase = GamePhase.OutlinePass;
+    }
+
+    IEnumerator EndGame()
+    {
+        yield return new WaitForSeconds(3.0f);
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
