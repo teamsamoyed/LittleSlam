@@ -23,6 +23,11 @@ public class Ball : MonoBehaviour
 
             owner = value;
 
+            if (GameManager.Instance.Phase == GamePhase.OutlinePass)
+            {
+                GameManager.Instance.Phase = GamePhase.InGame;
+            }
+
             if (prevOwner == null ||
                (owner != null && prevOwner != null && owner.GetComponent<Player>().Team != prevOwner.GetComponent<Player>().Team))
             {
@@ -99,7 +104,14 @@ public class Ball : MonoBehaviour
         }
 
         if (collision.gameObject.tag != Tags.Player)
+        {
             PlayBounceSound();
+
+            if (GameManager.Instance.Phase == GamePhase.OutlinePass)
+            {
+                GameManager.Instance.Phase = GamePhase.InGame;
+            }
+        }
     }
 
     public void PlayBounceSound()

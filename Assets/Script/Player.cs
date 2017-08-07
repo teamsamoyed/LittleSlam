@@ -884,7 +884,6 @@ public class Player : MonoBehaviour
             if (Input.GetButtonDown(Key.Pass(Team)))
             {
                 Pass(PlayerManager.GetPlayer(Team, 1));
-                GameManager.Instance.Phase = GamePhase.InGame;
             }
             return;
         }
@@ -911,18 +910,18 @@ public class Player : MonoBehaviour
             Ball.GetComponent<Ball>().Owner = gameObject;
             transform.position = Pos;
 
+            Ani.SetBool("Front", false);
+            Ani.SetBool("Back", false);
+
             if (Pos.z >= Ball.GetComponent<Ball>().ZCut)
             {
-                Ani.SetBool("Front", false);
                 Ani.SetBool("Back", true);
 
                 GetComponent<SpriteRenderer>().flipX = false;
             }
             else if (Pos.z <= -Ball.GetComponent<Ball>().ZCut)
             {
-
                 Ani.SetBool("Front", true);
-                Ani.SetBool("Back", false);
 
                 GetComponent<SpriteRenderer>().flipX = false;
             }
