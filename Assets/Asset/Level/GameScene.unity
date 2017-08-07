@@ -265,6 +265,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Team: 1
   GoalPos: {x: 0, y: 0, z: 0}
+  CheerSounds: []
 --- !u!1 &88627524
 GameObject:
   m_ObjectHideFlags: 0
@@ -320,6 +321,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Team: 1
   GoalPos: {x: 0, y: 0, z: 0}
+  CheerSounds: []
 --- !u!1001 &107276648
 Prefab:
   m_ObjectHideFlags: 0
@@ -441,6 +443,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Team: 1
   GoalPos: {x: 0, y: 0, z: 0}
+  CheerSounds: []
 --- !u!4 &165075000 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4551007994841276, guid: 41251a2fd68a1ee47929b6b1b0cfdba8,
@@ -1474,6 +1477,7 @@ GameObject:
   - component: {fileID: 517095370}
   - component: {fileID: 517095373}
   - component: {fileID: 517095372}
+  - component: {fileID: 517095374}
   m_Layer: 0
   m_Name: Referee
   m_TagString: Untagged
@@ -1567,6 +1571,87 @@ MonoBehaviour:
   ThrowX: 0
   ThrowY: 0.272
   ThrowForce: 1.763
+  ThrowSound: {fileID: 8300000, guid: 489aa5cceb60ab744b5d7b69cd050e16, type: 3}
+--- !u!82 &517095374
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 517095369}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
 --- !u!4 &527557507 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4703015059429386, guid: 29f72381ac45029429186c7e15ace1cb,
@@ -2072,6 +2157,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Team: 1
   GoalPos: {x: 0, y: 0, z: 0}
+  CheerSounds: []
 --- !u!1 &670846791
 GameObject:
   m_ObjectHideFlags: 0
@@ -2374,6 +2460,7 @@ GameObject:
   - component: {fileID: 777059908}
   - component: {fileID: 777059910}
   - component: {fileID: 777059909}
+  - component: {fileID: 777059911}
   m_Layer: 0
   m_Name: GoalPoint
   m_TagString: Goalpost
@@ -2420,6 +2507,89 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Team: 0
   GoalPos: {x: -3.62, y: 0, z: 0}
+  CheerSounds:
+  - {fileID: 8300000, guid: 906a9243181a4f140ac9e4bf0be4cb68, type: 3}
+  - {fileID: 8300000, guid: 9080723c9a2e69f4ca07ce814df1ac78, type: 3}
+--- !u!82 &777059911
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 777059907}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
 --- !u!4 &787657309
 Transform:
   m_ObjectHideFlags: 0
@@ -2784,6 +2954,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Team: 1
   GoalPos: {x: 0, y: 0, z: 0}
+  CheerSounds: []
 --- !u!1001 &945439131
 Prefab:
   m_ObjectHideFlags: 0
@@ -3765,6 +3936,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Team: 1
   GoalPos: {x: 0, y: 0, z: 0}
+  CheerSounds: []
 --- !u!1001 &1434110014
 Prefab:
   m_ObjectHideFlags: 0
@@ -4168,6 +4340,7 @@ GameObject:
   - component: {fileID: 1500688320}
   - component: {fileID: 1500688319}
   - component: {fileID: 1500688323}
+  - component: {fileID: 1500688324}
   m_Layer: 0
   m_Name: ball
   m_TagString: Ball
@@ -4268,11 +4441,91 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f34079b79ebd9441a4f4b9d6b33c8df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Body: {fileID: 0}
+  Bounce: {fileID: 8300000, guid: 06242dbf717688a42a8b73a9ffe6bad4, type: 3}
   XCut: 3.58
   ZCut: 1.96
   Score: 2
   BallGettingEnd: 0
+--- !u!82 &1500688324
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1500688318}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
 --- !u!1 &1509853771
 GameObject:
   m_ObjectHideFlags: 0
@@ -4283,6 +4536,7 @@ GameObject:
   - component: {fileID: 1509853772}
   - component: {fileID: 1509853773}
   - component: {fileID: 1509853774}
+  - component: {fileID: 1509853775}
   m_Layer: 0
   m_Name: GoalPoint
   m_TagString: Goalpost
@@ -4316,6 +4570,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Team: 1
   GoalPos: {x: 3.62, y: 0, z: 0}
+  CheerSounds:
+  - {fileID: 8300000, guid: 906a9243181a4f140ac9e4bf0be4cb68, type: 3}
+  - {fileID: 8300000, guid: 9080723c9a2e69f4ca07ce814df1ac78, type: 3}
 --- !u!136 &1509853774
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -4329,6 +4586,86 @@ CapsuleCollider:
   m_Height: 0.02
   m_Direction: 1
   m_Center: {x: 0, y: -0.05, z: 0}
+--- !u!82 &1509853775
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1509853771}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
 --- !u!1 &1560840003
 GameObject:
   m_ObjectHideFlags: 0
@@ -4635,6 +4972,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Team: 1
   GoalPos: {x: 0, y: 0, z: 0}
+  CheerSounds: []
 --- !u!1 &1791122937
 GameObject:
   m_ObjectHideFlags: 0
@@ -4973,6 +5311,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Team: 1
   GoalPos: {x: 0, y: 0, z: 0}
+  CheerSounds: []
 --- !u!1001 &1899734031
 Prefab:
   m_ObjectHideFlags: 0
@@ -5120,6 +5459,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Team: 1
   GoalPos: {x: 0, y: 0, z: 0}
+  CheerSounds: []
 --- !u!1 &1956833003
 GameObject:
   m_ObjectHideFlags: 0
@@ -5211,6 +5551,7 @@ MonoBehaviour:
   BlockJump: 0
   BlockPower: 0
   BlockHead: 0
+  PasslineRange: 0
   MaxPassDegree: 45
   DefaultPassSpeed: 1
   MaxPassSpeed: 3.5
@@ -5226,6 +5567,8 @@ MonoBehaviour:
   XCut: 3.58
   ZCut: 1.96
   IsBlock: 0
+  BounceSound: {fileID: 0}
+  ShootSound: {fileID: 0}
 --- !u!212 &1956833008
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5495,6 +5838,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Team: 1
   GoalPos: {x: 0, y: 0, z: 0}
+  CheerSounds: []
 --- !u!1001 &2115643404
 Prefab:
   m_ObjectHideFlags: 0

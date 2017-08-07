@@ -9,10 +9,16 @@ public class Referee : MonoBehaviour
     public float ThrowForce;
     GameObject Ball;
 
+    public AudioClip ThrowSound;
+
+    AudioSource Source;
+
     bool moveStart;
 
 	// Use this for initialization
 	void Start () {
+        Source = GetComponent<AudioSource>();
+
         Ball = GameObject.FindGameObjectWithTag(Tags.Ball);
 
         Ball.SetActive(false);
@@ -46,6 +52,7 @@ public class Referee : MonoBehaviour
 
     void ThrowBall()
     {
+        Source.PlayOneShot(ThrowSound);
         GameManager.Instance.Phase = GamePhase.BallGetting;
 
         var startPosition = transform.position;

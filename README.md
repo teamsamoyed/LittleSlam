@@ -17,4 +17,7 @@ inspired by [Super Slam](https://namu.wiki/w/%EC%8A%88%ED%8D%BC%EC%8A%AC%EB%9E%A
 
 ### Sound Files
 
-
+- [sfx_throw.wav](https://opengameart.org/content/sfxthrow)
+- [bounce.wav](http://freesound.org/people/andre.rocha.nascimento/sounds/51461/)
+- [cheer1.wav](http://freesound.org/people/jayfrosting/sounds/333404/)
+- [cheer2.ogg](http://freesound.org/people/BerlinGameScene/sounds/267248/)

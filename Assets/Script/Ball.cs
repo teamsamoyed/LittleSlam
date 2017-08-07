@@ -6,7 +6,9 @@ public class Ball : MonoBehaviour
 {
     GameObject owner;
     int RecentTeam = 0;
-    public Rigidbody Body;
+    Rigidbody Body;
+    public AudioClip Bounce;
+    AudioSource Source;
 
     public GameObject Owner
     {
@@ -44,6 +46,7 @@ public class Ball : MonoBehaviour
     void Start()
     {
         Body = GetComponent<Rigidbody>();
+        Source = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -94,5 +97,13 @@ public class Ball : MonoBehaviour
             BallGettingEnd = true;
             GameManager.Instance.Phase = GamePhase.InGame;
         }
+
+        if (collision.gameObject.tag != Tags.Player)
+            PlayBounceSound();
+    }
+
+    public void PlayBounceSound()
+    {
+        Source.PlayOneShot(Bounce);
     }
 }

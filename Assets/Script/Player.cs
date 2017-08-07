@@ -75,7 +75,12 @@ public class Player : MonoBehaviour
 
     public bool IsBlock;
 
+    public AudioClip BounceSound;
+    public AudioClip ShootSound;
+
     GameObject Indicator;
+
+    AudioSource Source;
 
 	// Use this for initialization
 	void Start ()
@@ -88,6 +93,7 @@ public class Player : MonoBehaviour
         InitAutoGoal();
         AutoState = AutoMoveState.Move;
         Indicator = transform.Find("Indicator").gameObject;
+        Source = GetComponent<AudioSource>();
 	}
 
     void ReadyShoot()
@@ -137,6 +143,12 @@ public class Player : MonoBehaviour
                 break; // wait에서는 암 것도 안함(상태 바뀌길 기다림)
         }
 	}
+
+    void Bounce()
+    {
+        Source.PlayOneShot(BounceSound);
+    }
+
     #region BallGetting
 
     void BallGettingUpdate()
@@ -176,6 +188,7 @@ public class Player : MonoBehaviour
         {
             //아군 쪽으로 패스
             //인덱스 1 or 2로 보낸다.
+            Source.PlayOneShot(BounceSound);
             Ani.SetTrigger("BlockEnd");
             GameManager.Instance.Phase = GamePhase.InGame;
 
@@ -701,6 +714,8 @@ public class Player : MonoBehaviour
 
     void ShootImpulse()
     {
+        Source.PlayOneShot(ShootSound);
+
         var goalposts = GameObject.FindGameObjectsWithTag(Tags.Goalpost);
 
         GameObject goal = null;
@@ -1017,6 +1032,7 @@ public class Player : MonoBehaviour
             }
             else if (State == PlayerState.Block && IsBlock)
             {
+                Source.PlayOneShot(BounceSound);
                 //공을 날아오는 반대편으로 쳐낸다
                 var vel = Ball.GetComponent<Rigidbody>().velocity;
                 var inverseVel = new Vector3(-vel.x, 0.0f, -vel.z);
