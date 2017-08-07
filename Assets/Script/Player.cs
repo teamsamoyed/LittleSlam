@@ -602,6 +602,7 @@ public class Player : MonoBehaviour
 
     void PassEnd()
     {
+        Source.PlayOneShot(ShootSound);
         IsAction = false;
         Ball.SetActive(true);
 
