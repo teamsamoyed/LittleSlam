@@ -323,6 +323,8 @@ MonoBehaviour:
   Team: 1
   GoalPos: {x: 0, y: 0, z: 0}
   CheerSounds: []
+  Front: {fileID: 0}
+  Back: {fileID: 0}
 --- !u!1001 &84374393
 Prefab:
   m_ObjectHideFlags: 0
@@ -436,6 +438,8 @@ MonoBehaviour:
   Team: 1
   GoalPos: {x: 0, y: 0, z: 0}
   CheerSounds: []
+  Front: {fileID: 0}
+  Back: {fileID: 0}
 --- !u!4 &101269448 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4703015059429386, guid: 29f72381ac45029429186c7e15ace1cb,
@@ -563,6 +567,8 @@ MonoBehaviour:
   Team: 1
   GoalPos: {x: 0, y: 0, z: 0}
   CheerSounds: []
+  Front: {fileID: 0}
+  Back: {fileID: 0}
 --- !u!4 &165075000 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4551007994841276, guid: 41251a2fd68a1ee47929b6b1b0cfdba8,
@@ -1591,6 +1597,7 @@ GameObject:
   m_Component:
   - component: {fileID: 486216981}
   - component: {fileID: 486216982}
+  - component: {fileID: 486216983}
   m_Layer: 0
   m_Name: goalpost_back
   m_TagString: Untagged
@@ -1653,6 +1660,23 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
+--- !u!95 &486216983
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 486216980}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 164cd163d206cf047800de28da30655a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!1 &517095369
 GameObject:
   m_ObjectHideFlags: 0
@@ -2284,6 +2308,7 @@ GameObject:
   m_Component:
   - component: {fileID: 641342730}
   - component: {fileID: 641342731}
+  - component: {fileID: 641342732}
   m_Layer: 0
   m_Name: goalpost_front
   m_TagString: Untagged
@@ -2346,6 +2371,23 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
+--- !u!95 &641342732
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 641342729}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f25ebf41a83b10441bc62c15dc8988fe, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!1 &663968192
 GameObject:
   m_ObjectHideFlags: 0
@@ -2402,6 +2444,8 @@ MonoBehaviour:
   Team: 1
   GoalPos: {x: 0, y: 0, z: 0}
   CheerSounds: []
+  Front: {fileID: 0}
+  Back: {fileID: 0}
 --- !u!1 &670846791
 GameObject:
   m_ObjectHideFlags: 0
@@ -2821,6 +2865,8 @@ MonoBehaviour:
   CheerSounds:
   - {fileID: 8300000, guid: 906a9243181a4f140ac9e4bf0be4cb68, type: 3}
   - {fileID: 8300000, guid: 9080723c9a2e69f4ca07ce814df1ac78, type: 3}
+  Front: {fileID: 641342729}
+  Back: {fileID: 486216980}
 --- !u!82 &777059911
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3032,6 +3078,7 @@ GameObject:
   m_Component:
   - component: {fileID: 870029178}
   - component: {fileID: 870029179}
+  - component: {fileID: 870029180}
   m_Layer: 0
   m_Name: goalpost_back
   m_TagString: Untagged
@@ -3094,6 +3141,23 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
+--- !u!95 &870029180
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 870029177}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 164cd163d206cf047800de28da30655a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!4 &884806845 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4551007994841276, guid: 41251a2fd68a1ee47929b6b1b0cfdba8,
@@ -3278,6 +3342,8 @@ MonoBehaviour:
   Team: 1
   GoalPos: {x: 0, y: 0, z: 0}
   CheerSounds: []
+  Front: {fileID: 0}
+  Back: {fileID: 0}
 --- !u!4 &939215878 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4703015059429386, guid: 29f72381ac45029429186c7e15ace1cb,
@@ -4456,6 +4522,8 @@ MonoBehaviour:
   Team: 1
   GoalPos: {x: 0, y: 0, z: 0}
   CheerSounds: []
+  Front: {fileID: 0}
+  Back: {fileID: 0}
 --- !u!1001 &1434110014
 Prefab:
   m_ObjectHideFlags: 0
@@ -5154,6 +5222,8 @@ MonoBehaviour:
   CheerSounds:
   - {fileID: 8300000, guid: 906a9243181a4f140ac9e4bf0be4cb68, type: 3}
   - {fileID: 8300000, guid: 9080723c9a2e69f4ca07ce814df1ac78, type: 3}
+  Front: {fileID: 1560840003}
+  Back: {fileID: 870029177}
 --- !u!136 &1509853774
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -5256,6 +5326,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1560840004}
   - component: {fileID: 1560840005}
+  - component: {fileID: 1560840006}
   m_Layer: 0
   m_Name: goalpost_front
   m_TagString: Untagged
@@ -5318,6 +5389,23 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
+--- !u!95 &1560840006
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1560840003}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f25ebf41a83b10441bc62c15dc8988fe, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!4 &1584979733 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4551007994841276, guid: 41251a2fd68a1ee47929b6b1b0cfdba8,
@@ -5730,6 +5818,8 @@ MonoBehaviour:
   Team: 1
   GoalPos: {x: 0, y: 0, z: 0}
   CheerSounds: []
+  Front: {fileID: 0}
+  Back: {fileID: 0}
 --- !u!4 &1771606433 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4703015059429386, guid: 29f72381ac45029429186c7e15ace1cb,
@@ -6131,6 +6221,8 @@ MonoBehaviour:
   Team: 1
   GoalPos: {x: 0, y: 0, z: 0}
   CheerSounds: []
+  Front: {fileID: 0}
+  Back: {fileID: 0}
 --- !u!1001 &1899734031
 Prefab:
   m_ObjectHideFlags: 0
@@ -6279,6 +6371,8 @@ MonoBehaviour:
   Team: 1
   GoalPos: {x: 0, y: 0, z: 0}
   CheerSounds: []
+  Front: {fileID: 0}
+  Back: {fileID: 0}
 --- !u!1 &1956833003
 GameObject:
   m_ObjectHideFlags: 0
@@ -6658,6 +6752,8 @@ MonoBehaviour:
   Team: 1
   GoalPos: {x: 0, y: 0, z: 0}
   CheerSounds: []
+  Front: {fileID: 0}
+  Back: {fileID: 0}
 --- !u!1001 &2115643404
 Prefab:
   m_ObjectHideFlags: 0

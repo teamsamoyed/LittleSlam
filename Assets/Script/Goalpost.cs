@@ -10,6 +10,9 @@ public class Goalpost : MonoBehaviour
 
     public List<AudioClip> CheerSounds;
 
+    public GameObject Front;
+    public GameObject Back;
+
     AudioSource Source;
 
     void Start()
@@ -35,5 +38,10 @@ public class Goalpost : MonoBehaviour
         GameManager.Instance.Phase = GamePhase.Wait;
 
         GameManager.Instance.OutlinePass(Team, GoalPos);
+
+        Front.GetComponent<Animator>().ResetTrigger("Start");
+        Front.GetComponent<Animator>().SetTrigger("Start");
+        Back.GetComponent<Animator>().ResetTrigger("Start");
+        Back.GetComponent<Animator>().SetTrigger("Start");
     }
 }
