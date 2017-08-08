@@ -53,6 +53,7 @@ public class Referee : MonoBehaviour
     void ThrowBall()
     {
         Source.PlayOneShot(ThrowSound);
+        StartCoroutine(BallGettingStart());
         GameManager.Instance.Phase = GamePhase.BallGetting;
 
         var startPosition = transform.position;
@@ -67,6 +68,13 @@ public class Referee : MonoBehaviour
     void AnimationEnd()
     {
         moveStart = true;
+    }
+
+    IEnumerator BallGettingStart()
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        GameManager.Instance.Phase = GamePhase.BallGetting;
     }
 }
 
