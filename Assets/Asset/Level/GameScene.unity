@@ -6459,8 +6459,11 @@ MonoBehaviour:
   Hp: 0
   Speed: 1
   Jump: 65
-  DunkJump: 0
   DunkDistance: 0
+  DunkFrontPos: {x: 0, y: 0, z: 0}
+  DunkBackPos: {x: 0, y: 0, z: 0}
+  DunkLeftPos: {x: 0, y: 0, z: 0}
+  DunkRightPos: {x: 0, y: 0, z: 0}
   PassTime: 0.5
   BlockJump: 0
   BlockPower: 0

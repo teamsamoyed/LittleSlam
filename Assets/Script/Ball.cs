@@ -23,7 +23,7 @@ public class Ball : MonoBehaviour
 
             owner = value;
 
-            if (GameManager.Instance.Phase == GamePhase.OutlinePass)
+            if (owner != null && GameManager.Instance.Phase == GamePhase.OutlinePass)
             {
                 GameManager.Instance.Phase = GamePhase.InGame;
             }

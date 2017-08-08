@@ -27,8 +27,12 @@ public class Player : MonoBehaviour
     public float Hp;
     public float Speed;
     public float Jump;
-    public float DunkJump;
     public float DunkDistance;
+    // goalpoint 기준 상대 좌표
+    public Vector3 DunkFrontPos;
+    public Vector3 DunkBackPos;
+    public Vector3 DunkLeftPos;
+    public Vector3 DunkRightPos;
     public float PassTime;
     public float BlockJump;
     public float BlockPower;
@@ -449,7 +453,7 @@ public class Player : MonoBehaviour
 
         Vector3 CheckPosition = transform.position;
         Vector3 size = Collider.size * 0.5f;
-        CheckPosition.y += 0.3f;
+        CheckPosition.y += 0.5f;
         CheckPosition.x += Direction.x * size.x;
         CheckPosition.z += Direction.z * size.z;
 
@@ -460,7 +464,7 @@ public class Player : MonoBehaviour
                 return false;
         }
 
-        size.y = 0.25f;
+        size.y = 0.45f;
 
         var overlapped = Physics.OverlapBox(CheckPosition, size);
 
@@ -684,11 +688,11 @@ public class Player : MonoBehaviour
 
             if (Team == 0)
             {
-                ballPos.x -= 0.02f;
+                ballPos.x -= 0.04f;
             }
             else
             {
-                ballPos.x += 0.02f;
+                ballPos.x += 0.04f;
             }
 
             Ball.transform.position = ballPos;
@@ -798,6 +802,9 @@ public class Player : MonoBehaviour
                 Ani.SetBool("Front", true);
             else
                 Ani.SetBool("Back", true);
+
+            if(Team == 1)
+                GetComponent<SpriteRenderer>().flipX = true;
         }
     }
 
@@ -809,7 +816,44 @@ public class Player : MonoBehaviour
 
     void ReadyDunk()
     {
-        Body.AddForce(0.0f, DunkJump, 0.0f);
+        //Body.AddForce(0.0f, DunkJump, 0.0f);
+        var goal = Goalpost.GetEnemy(Team);
+        var goalPos = goal.transform.position;
+        Vector3 vel = new Vector3();
+
+        if (Ani.GetBool("Front"))
+        {
+            goalPos += DunkFrontPos;
+        }
+        else if (Ani.GetBool("Back"))
+        {
+            goalPos += DunkBackPos;
+        }
+        else
+        {
+            if (Team == 0)
+            {
+                goalPos += DunkLeftPos;
+            }
+            else
+            {
+                goalPos += DunkRightPos;
+            }
+        }
+
+        goalPos -= goal.transform.localPosition;
+
+        var start = transform.position;
+        var dir = goalPos - start;
+
+        vel.y = Mathf.Sqrt(-2 * Physics.gravity.y * dir.y);
+
+        var time = -vel.y / Physics.gravity.y;
+
+        vel.x = dir.x / time;
+        vel.z = dir.z / time;
+
+        Body.velocity = vel;
     }
 
     void ShootImpulse()
