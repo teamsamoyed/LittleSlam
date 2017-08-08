@@ -6460,6 +6460,7 @@ MonoBehaviour:
   Speed: 1
   Jump: 65
   DunkJump: 0
+  DunkDistance: 0
   PassTime: 0.5
   BlockJump: 0
   BlockPower: 0

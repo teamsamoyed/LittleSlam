@@ -287,7 +287,8 @@ MonoBehaviour:
   Hp: 0
   Speed: 1
   Jump: 55
-  DunkJump: 0
+  DunkJump: 85
+  DunkDistance: 0.5
   PassTime: 0.5
   BlockJump: 70
   BlockPower: 0.1

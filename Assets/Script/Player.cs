@@ -6,6 +6,8 @@ enum PlayerState
 {
     Move,
     Shoot,
+    Dunk,
+    Layup,
     Block
 }
 
@@ -26,6 +28,7 @@ public class Player : MonoBehaviour
     public float Speed;
     public float Jump;
     public float DunkJump;
+    public float DunkDistance;
     public float PassTime;
     public float BlockJump;
     public float BlockPower;
@@ -95,16 +98,23 @@ public class Player : MonoBehaviour
         Indicator = transform.Find("Indicator").gameObject;
         Source = GetComponent<AudioSource>();
 	}
-
-    void ReadyShoot()
-    {
-        Body.AddForce(0.0f, Jump, 0.0f);
-        IsShootMotionEnded = true;
-    }
 	
 	// Update is called once per frame
 	void Update ()
     {
+
+        if (transform.position.y > 0.2f)
+        {
+            if (Ani.GetBool("Front"))
+                GetComponent<SpriteRenderer>().sortingOrder = 0;
+            else if (Ani.GetBool("Back"))
+                GetComponent<SpriteRenderer>().sortingOrder = 2;
+        }
+        else
+        {
+            GetComponent<SpriteRenderer>().sortingOrder = 1;
+        }
+
         Indicator.SetActive(IsPossessed);
 
         Ani.SetBool("Landing", IsLanded);
@@ -249,6 +259,9 @@ public class Player : MonoBehaviour
             case PlayerState.Block:
                 BlockControl();
                 break;
+            case PlayerState.Dunk:
+                DunkControl();
+                break;
         }
     }
 
@@ -278,56 +291,21 @@ public class Player : MonoBehaviour
 
         if (Input.GetButtonDown(Key.Shoot(Team)))
         {
-            State = PlayerState.Shoot;
-            Ani.ResetTrigger("Shoot");
-            Ani.ResetTrigger("ShootEnd");
-            WaitShootRelease = true;
-            IsShootMotionEnded = false;
-            ShootHoldTime = 0.0f;
-
-            var goalposts = GameObject.FindGameObjectsWithTag(Tags.Goalpost);
-
-            GameObject goal = null;
-
-            foreach (var goalpost in goalposts)
-            {
-                if (goalpost.GetComponent<Goalpost>().Team != Team)
-                {
-                    goal = goalpost;
-                    break;
-                }
-            }
-
+            var goal = Goalpost.GetEnemy(Team);
+            var goalPos = goal.transform.position;
+            goalPos.y = 0;
             var startPos = transform.position;
-            var dir = goal.transform.position - startPos;
+            startPos.y = 0;
+            var distance = Vector3.Distance(goalPos, startPos);
 
-            if (Mathf.Abs(dir.x) * 4 < Mathf.Abs(dir.z))
+            if (distance < DunkDistance)
             {
-                if (dir.z < 0.0f)
-                {
-                    Ani.SetBool("Front", true);
-                    Ani.SetBool("Back", false);
-                }
-                else if (dir.z > 0.0f)
-                {
-                    Ani.SetBool("Front", false);
-                    Ani.SetBool("Back", true);
-                }
-
-                GetComponent<SpriteRenderer>().flipX = false;
+                DunkStart(goal);
             }
             else
             {
-                Ani.SetBool("Front", false);
-                Ani.SetBool("Back", false);
-
-                if (goal.transform.position.x < startPos.x)
-                    GetComponent<SpriteRenderer>().flipX = true;
-                else
-                    GetComponent<SpriteRenderer>().flipX = false;
+                ShootStart(goal);
             }
-
-            Ani.SetTrigger("Shoot");
         }
     }
 
@@ -471,7 +449,7 @@ public class Player : MonoBehaviour
 
         Vector3 CheckPosition = transform.position;
         Vector3 size = Collider.size * 0.5f;
-        CheckPosition.y += size.y;
+        CheckPosition.y += 0.3f;
         CheckPosition.x += Direction.x * size.x;
         CheckPosition.z += Direction.z * size.z;
 
@@ -482,7 +460,7 @@ public class Player : MonoBehaviour
                 return false;
         }
 
-        size.y = 0.0f;
+        size.y = 0.25f;
 
         var overlapped = Physics.OverlapBox(CheckPosition, size);
 
@@ -689,6 +667,42 @@ public class Player : MonoBehaviour
 
     #region Shoot
 
+    void DunkControl()
+    {
+        //최고점 찍음 - 이 때 내려온다
+        if (WaitShootRelease && transform.position.y > 0.1f &&
+            Body.velocity.y < 0.0f)
+        {
+            Ani.SetTrigger("ShootEnd");
+            WaitShootRelease = false;
+            //공도 여기서부터 등장
+            var goal = Goalpost.GetEnemy(Team);
+            
+            Ball.SetActive(true);
+            var ballPos = goal.transform.position;
+            ballPos.y += 0.05f;
+
+            if (Team == 0)
+            {
+                ballPos.x -= 0.02f;
+            }
+            else
+            {
+                ballPos.x += 0.02f;
+            }
+
+            Ball.transform.position = ballPos;
+            Ball.GetComponent<Ball>().Owner = null;
+            Ball.GetComponent<Ball>().Score = 2;
+            Ball.GetComponent<Rigidbody>().velocity = new Vector3(0.0f, -0.1f, 0.0f);
+        }
+
+        if (!WaitShootRelease && IsLanded)
+        {
+            State = PlayerState.Move;
+        }
+    }
+
     void ShootControl()
     {
         if (Input.GetButtonUp(Key.Shoot(Team)))
@@ -713,22 +727,96 @@ public class Player : MonoBehaviour
         }
     }
 
+    void ShootStart(GameObject goal)
+    {
+        var startPos = transform.position;
+
+        State = PlayerState.Shoot;
+        Ani.ResetTrigger("Shoot");
+        Ani.ResetTrigger("ShootEnd");
+        WaitShootRelease = true;
+        IsShootMotionEnded = false;
+        ShootHoldTime = 0.0f;
+
+        var dir = goal.transform.position - startPos;
+
+        if (Mathf.Abs(dir.x) * 4 < Mathf.Abs(dir.z))
+        {
+            if (dir.z < 0.0f)
+            {
+                Ani.SetBool("Front", true);
+                Ani.SetBool("Back", false);
+            }
+            else if (dir.z > 0.0f)
+            {
+                Ani.SetBool("Front", false);
+                Ani.SetBool("Back", true);
+            }
+
+            GetComponent<SpriteRenderer>().flipX = false;
+        }
+        else
+        {
+            Ani.SetBool("Front", false);
+            Ani.SetBool("Back", false);
+
+            if (goal.transform.position.x < startPos.x)
+                GetComponent<SpriteRenderer>().flipX = true;
+            else
+                GetComponent<SpriteRenderer>().flipX = false;
+        }
+
+        Ani.SetTrigger("Shoot");
+    }
+
+    void DunkStart(GameObject goal)
+    {
+        Ani.ResetTrigger("Dunk");
+
+        State = PlayerState.Dunk;
+        WaitShootRelease = true;
+        IsShootMotionEnded = false;
+        Ani.SetTrigger("Dunk");
+
+        Ani.SetBool("Front", false);
+        Ani.SetBool("Back", false);
+        GetComponent<SpriteRenderer>().flipX = false;
+
+        float dx = goal.transform.position.x - transform.position.x;
+        float dz = goal.transform.position.z - transform.position.z;
+
+        if (Mathf.Abs(dx) > Mathf.Abs(dz))
+        {
+            if (dx < 0)
+                GetComponent<SpriteRenderer>().flipX = true;
+            else
+                GetComponent<SpriteRenderer>().flipX = false;
+        }
+        else
+        {
+            if (dz < 0)
+                Ani.SetBool("Front", true);
+            else
+                Ani.SetBool("Back", true);
+        }
+    }
+
+    void ReadyShoot()
+    {
+        Body.AddForce(0.0f, Jump, 0.0f);
+        IsShootMotionEnded = true;
+    }
+
+    void ReadyDunk()
+    {
+        Body.AddForce(0.0f, DunkJump, 0.0f);
+    }
+
     void ShootImpulse()
     {
         Source.PlayOneShot(ShootSound);
-
-        var goalposts = GameObject.FindGameObjectsWithTag(Tags.Goalpost);
-
-        GameObject goal = null;
-
-        foreach (var goalpost in goalposts)
-        {
-            if (goalpost.GetComponent<Goalpost>().Team != Team)
-            {
-                goal = goalpost;
-                break;
-            }
-        }
+        
+        GameObject goal = Goalpost.GetEnemy(Team);
 
         var startPos = transform.position;
 

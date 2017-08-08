@@ -44,4 +44,19 @@ public class Goalpost : MonoBehaviour
         Back.GetComponent<Animator>().ResetTrigger("Start");
         Back.GetComponent<Animator>().SetTrigger("Start");
     }
+
+    public static GameObject GetEnemy(int team)
+    {
+        var goalposts = GameObject.FindGameObjectsWithTag(Tags.Goalpost);
+
+        foreach (var goalpost in goalposts)
+        {
+            if (goalpost.GetComponent<Goalpost>().Team != team)
+            {
+                return goalpost;
+            }
+        }
+
+        return null;
+    }
 }
