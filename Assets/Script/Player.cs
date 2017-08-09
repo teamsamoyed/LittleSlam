@@ -28,6 +28,7 @@ public class Player : MonoBehaviour
     public float Speed;
     public float Jump;
     public float DunkDistance;
+    public float LayupDistance;
     // goalpoint 기준 상대 좌표
     public Vector3 DunkFrontPos;
     public Vector3 DunkBackPos;
@@ -266,6 +267,9 @@ public class Player : MonoBehaviour
             case PlayerState.Dunk:
                 DunkControl();
                 break;
+            case PlayerState.Layup:
+                LayupControl();
+                break;
         }
     }
 
@@ -305,6 +309,10 @@ public class Player : MonoBehaviour
             if (distance < DunkDistance)
             {
                 DunkStart(goal);
+            }
+            else if (distance < LayupDistance)
+            {
+                LayupStart(goal);
             }
             else
             {
@@ -731,6 +739,25 @@ public class Player : MonoBehaviour
         }
     }
 
+    void LayupControl()
+    {
+        if (IsShootMotionEnded && 
+            WaitShootRelease &&
+            Body.velocity.y < 0.0f)
+        {
+            WaitShootRelease = false;
+            ShootImpulse();
+        }
+
+        if (!WaitShootRelease)
+        {
+            if (IsLanded)
+            {
+                State = PlayerState.Move;
+            }
+        }
+    }
+
     void ShootStart(GameObject goal)
     {
         var startPos = transform.position;
@@ -807,6 +834,37 @@ public class Player : MonoBehaviour
         }
 
         Ani.SetTrigger("Dunk");
+    }
+
+    void LayupStart(GameObject goal)
+    {
+        Ani.ResetTrigger("Layup");
+
+        State = PlayerState.Layup;
+        WaitShootRelease = true;
+        IsShootMotionEnded = false;
+
+        Ani.SetBool("Front", false);
+        Ani.SetBool("Back", false);
+        GetComponent<SpriteRenderer>().flipX = false;
+
+        float dx = goal.transform.position.x - transform.position.x;
+        float dz = goal.transform.position.z - transform.position.z;
+
+        if (dx < 0)
+            GetComponent<SpriteRenderer>().flipX = true;
+        else
+            GetComponent<SpriteRenderer>().flipX = false;
+
+        Body.velocity = new Vector3(dx, 0.0f, dz);
+        Body.AddForce(0.0f, Jump, 0.0f);
+
+        Ani.SetTrigger("Layup");
+    }
+
+    void LayupRelease()
+    {
+        IsShootMotionEnded = true;
     }
 
     void ReadyShoot()
