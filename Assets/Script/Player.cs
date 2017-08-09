@@ -780,7 +780,6 @@ public class Player : MonoBehaviour
         State = PlayerState.Dunk;
         WaitShootRelease = true;
         IsShootMotionEnded = false;
-        Ani.SetTrigger("Dunk");
 
         Ani.SetBool("Front", false);
         Ani.SetBool("Back", false);
@@ -806,6 +805,8 @@ public class Player : MonoBehaviour
             if(Team == 1)
                 GetComponent<SpriteRenderer>().flipX = true;
         }
+
+        Ani.SetTrigger("Dunk");
     }
 
     void ReadyShoot()
@@ -1100,7 +1101,7 @@ public class Player : MonoBehaviour
             return;
         }
 
-        if (GameManager.Instance.Phase == GamePhase.InGame)
+        if (GameManager.Instance.Phase == GamePhase.InGame || GameManager.Instance.Phase == GamePhase.OutlinePass)
         {
             if (State == PlayerState.Move && !IsAction)
             {
