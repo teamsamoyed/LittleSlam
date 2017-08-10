@@ -62,7 +62,7 @@ public class GameManager : MonoBehaviour
         {
             var owner = Ball.GetComponent<Ball>().Owner;
             TimeOut -= Time.deltaTime;
-            return;
+
             if (TimeOut <= 0.0f)
             {
                 var pos = owner.transform.position;
