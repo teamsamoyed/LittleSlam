@@ -35,7 +35,7 @@ public class PlayerManager : MonoBehaviour
         var players = GameObject.FindGameObjectsWithTag(Tags.Player);
 
         GameObject nextPlayer = null;
-        var minDistance = 999999.9f;
+        var minDistance = -99999.9f;
 
         foreach (var player in players)
         {
@@ -49,10 +49,19 @@ public class PlayerManager : MonoBehaviour
                 continue;
             }
 
-            var distance = Vector3.Distance(player.transform.position, Ball.transform.position);
+            float distance = player.transform.position.x - Ball.transform.position.x;
 
-            if (distance < minDistance)
+            if (player.GetComponent<Player>().Team == 0)
             {
+                distance = -distance;
+            }
+
+            if (Mathf.Abs(distance) < Mathf.Abs(minDistance) ||
+                (minDistance < 0 && distance > 0))
+            {
+                if (distance < 0 && minDistance > 0)
+                    continue;
+
                 minDistance = distance;
                 nextPlayer = player;
             }

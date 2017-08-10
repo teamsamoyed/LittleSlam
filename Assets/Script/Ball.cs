@@ -9,6 +9,7 @@ public class Ball : MonoBehaviour
     Rigidbody Body;
     public AudioClip Bounce;
     AudioSource Source;
+    public int TouchCount = 0;
 
     public GameObject Owner
     {
@@ -19,6 +20,7 @@ public class Ball : MonoBehaviour
 
         set
         {
+            TouchCount = 0;
             var prevOwner = owner;
 
             owner = value;
@@ -95,6 +97,14 @@ public class Ball : MonoBehaviour
             GameManager.Instance.Phase = GamePhase.Wait;
             GameManager.Instance.OutlinePass((RecentTeam + 1) % 2, outlinePos);
         }
+
+        if (transform.position.y > 0.0f)
+        {
+            if (Body.velocity.magnitude == 0.0f)
+            {
+                Body.AddForce(0.0f, 0.0f, 1.0f);
+            }
+        }
     }
 
     void OnCollisionEnter(Collision collision)
@@ -107,6 +117,7 @@ public class Ball : MonoBehaviour
 
         if (collision.gameObject.tag != Tags.Player)
         {
+            TouchCount++;
             PlayBounceSound();
 
             if (GameManager.Instance.Phase == GamePhase.OutlinePass)
