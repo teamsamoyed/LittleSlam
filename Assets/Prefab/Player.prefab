@@ -25,7 +25,7 @@ GameObject:
   - component: {fileID: 65700621744284408}
   - component: {fileID: 95768514441612468}
   - component: {fileID: 82742003351972822}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -299,8 +299,7 @@ MonoBehaviour:
   BlockHead: 0.377
   PasslineRange: 0.7
   MaxPassDegree: 60
-  DefaultPassSpeed: 1
-  MaxPassSpeed: 3.5
+  MinPassSpeed: 2
   ShootMaxHoldTime: 0.75
   StealRange: 0.4
   ShootX: 0.082
@@ -309,7 +308,7 @@ MonoBehaviour:
   FrontShootY: 0.4076
   BackShootX: 0.0177
   BackShootY: 0.4074
-  ThreePointDistance: 1.7
+  ThreePointDistance: 1.6
   XCut: 3.58
   ZCut: 1.96
   IsBlock: 0

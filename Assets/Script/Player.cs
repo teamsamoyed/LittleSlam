@@ -49,8 +49,7 @@ public class Player : MonoBehaviour
     //보는 방향에서 이 각도 안 쪽일 때만 그 선수 겨냥해서 패스
     //그 외의 경우 그냥 해당 방향 직선으로 쏴버린다
     public float MaxPassDegree;
-    public float DefaultPassSpeed;
-    public float MaxPassSpeed;
+    public float MinPassSpeed;
     public float ShootMaxHoldTime;
     public float StealRange;
 
@@ -215,11 +214,13 @@ public class Player : MonoBehaviour
 
             foreach (var player in players)
             {
+                player.GetComponent<Player>().BlockInput = true;
+                player.GetComponent<Player>().BlockTime = 0.5f;
+
                 if (player.GetComponent<Player>().Team == Team &&
                     player.GetComponent<Player>().Index == goalIndex)
                 {
                     goal = player;
-                    break;
                 }
             }
 
@@ -387,6 +388,16 @@ public class Player : MonoBehaviour
     {
         IsBlock = true;
         Body.AddForce(0.0f, BlockJump, 0.0f);
+
+        if (GameManager.Instance.Phase == GamePhase.InGame)
+        {
+            var dir = Ball.transform.position - transform.position;
+            dir.y = 0.0f;
+            dir.Normalize();
+            dir *= 0.5f;
+
+            Body.velocity = new Vector3(dir.x, Body.velocity.y, dir.z);
+        }
     }
 
     void BlockEnd()
@@ -473,7 +484,7 @@ public class Player : MonoBehaviour
         }
 
         size.y = 0.3f;
-
+        /*
         var overlapped = Physics.OverlapBox(CheckPosition, size);
 
         foreach (var o in overlapped)
@@ -488,7 +499,7 @@ public class Player : MonoBehaviour
 
             if (!IsAutoMove || (player != null && player.IsPossessed))
                 return false;
-        }
+        }*/
 
         return true;
     }
@@ -544,7 +555,7 @@ public class Player : MonoBehaviour
 
         PassGoal = goal;
 
-        Vector3 end;
+        Vector3 end = new Vector3();
 
         if (goal != null)
         {
@@ -556,28 +567,24 @@ public class Player : MonoBehaviour
             PassStart.y += 0.16f;
             end.y += 0.16f;
         }
-        else
-        {
-            var dir = GetPassDirection();
-
-            //이 방향으로 기본 속도로 쏜다 그냥 그게 끝
-            PassStart = transform.position;
-            end = PassStart + dir * DefaultPassSpeed;
-            dir.Normalize();
-            PassStart += dir * 0.15f;
-            PassStart.y += 0.16f;
-            end.y += 0.16f;
-        }
 
         Ani.SetBool("Front", false);
         Ani.SetBool("Back", false);
 
         PassVelocity = (end - PassStart) / PassTime - Physics.gravity * PassTime * 0.5f;
 
-        if (PassVelocity.x < 0.0f)
+        float time = PassTime;
+
+        if (PassVelocity.magnitude < MinPassSpeed)
         {
-            GetComponent<SpriteRenderer>().flipX = true;
+            var rate = MinPassSpeed / PassVelocity.magnitude;
+
+            var fastTime = PassTime / rate;
+            time = fastTime;
+
+            PassVelocity = (end - PassStart) / fastTime - Physics.gravity * fastTime * 0.5f;
         }
+
         else if (PassVelocity.x > 0.0f)
         {
             GetComponent<SpriteRenderer>().flipX = false;
@@ -585,20 +592,7 @@ public class Player : MonoBehaviour
 
         Ani.SetTrigger("Pass");
 
-        if (PassVelocity.magnitude > MaxPassSpeed)
-        {
-            PassVelocity *= MaxPassSpeed / PassVelocity.magnitude;
-        }
-
         IsAction = true;
-    }
-
-    void PassEnd()
-    {
-        Source.PlayOneShot(ShootSound);
-        IsAction = false;
-        Ball.SetActive(true);
-
         //아군은 pass time동안은 못 움직임
         var players = GameObject.FindGameObjectsWithTag(Tags.Player);
 
@@ -608,8 +602,16 @@ public class Player : MonoBehaviour
                 continue;
 
             player.GetComponent<Player>().BlockInput = true;
-            player.GetComponent<Player>().BlockTime = PassTime;
+            player.GetComponent<Player>().BlockTime = time + 0.26f;
         }
+
+    }
+
+    void PassEnd()
+    {
+        Source.PlayOneShot(ShootSound);
+        IsAction = false;
+        Ball.SetActive(true);
 
         Ani.ResetTrigger("Pass");
         Ball.transform.position = PassStart;
@@ -685,11 +687,15 @@ public class Player : MonoBehaviour
     void DunkControl()
     {
         //최고점 찍음 - 이 때 내려온다
-        if (WaitShootRelease && transform.position.y > 0.1f &&
+        if (WaitShootRelease && IsShootMotionEnded &&
             Body.velocity.y < 0.0f)
         {
             Ani.SetTrigger("ShootEnd");
             WaitShootRelease = false;
+
+            if (Ball.GetComponent<Ball>().Owner != gameObject)
+                return;
+
             //공도 여기서부터 등장
             var goal = Goalpost.GetEnemy(Team);
             
@@ -712,8 +718,9 @@ public class Player : MonoBehaviour
             Ball.GetComponent<Rigidbody>().velocity = new Vector3(0.0f, -0.1f, 0.0f);
         }
 
-        if (!WaitShootRelease && IsLanded)
+        if (!WaitShootRelease && IsShootMotionEnded && IsLanded)
         {
+            Ani.ResetTrigger("Dunk");
             State = PlayerState.Move;
         }
     }
@@ -737,6 +744,8 @@ public class Player : MonoBehaviour
 
             if (IsLanded)
             {
+                Ani.ResetTrigger("Shoot");
+                Ani.ResetTrigger("ShootEnd");
                 State = PlayerState.Move;
             }
         }
@@ -744,18 +753,17 @@ public class Player : MonoBehaviour
 
     void LayupControl()
     {
-        if (IsShootMotionEnded && 
-            WaitShootRelease &&
-            Body.velocity.y < 0.0f)
+        if (IsShootMotionEnded && WaitShootRelease)
         {
             WaitShootRelease = false;
             ShootImpulse();
         }
 
-        if (!WaitShootRelease)
+        if (!WaitShootRelease && IsShootMotionEnded)
         {
             if (IsLanded)
             {
+                Ani.ResetTrigger("Layup");
                 State = PlayerState.Move;
             }
         }
@@ -766,8 +774,6 @@ public class Player : MonoBehaviour
         var startPos = transform.position;
 
         State = PlayerState.Shoot;
-        Ani.ResetTrigger("Shoot");
-        Ani.ResetTrigger("ShootEnd");
         WaitShootRelease = true;
         IsShootMotionEnded = false;
         ShootHoldTime = 0.0f;
@@ -841,8 +847,6 @@ public class Player : MonoBehaviour
 
     void LayupStart(GameObject goal)
     {
-        Ani.ResetTrigger("Layup");
-
         State = PlayerState.Layup;
         WaitShootRelease = true;
         IsShootMotionEnded = false;
@@ -916,10 +920,14 @@ public class Player : MonoBehaviour
         vel.z = dir.z / time;
 
         Body.velocity = vel;
+        IsShootMotionEnded = true;
     }
 
     void ShootImpulse()
     {
+        if (Ball.GetComponent<Ball>().Owner != gameObject)
+            return;
+
         Source.PlayOneShot(ShootSound);
         
         GameObject goal = Goalpost.GetEnemy(Team);
@@ -953,12 +961,21 @@ public class Player : MonoBehaviour
 
         ShootTime += dist * 0.33333f;
 
+        var d = Random.Range(1.0f - dist * 0.01f, 1.0f + dist * 0.01f);
+        d = Mathf.Clamp(d, 0.5f, 1.5f);
+        var yvel = Body.velocity.y * d;
+
+        yvel = Mathf.Clamp(yvel, -0.2f, 0.2f);
+        yvel = Mathf.Abs(yvel);
+
+        if (State != PlayerState.Layup)
+        {
+            endPos.x += Random.Range(-yvel, yvel);
+            endPos.y += Random.Range(-yvel, yvel);
+            endPos.z += Random.Range(-yvel, yvel);
+        }
+
         var dir = (endPos - startPos) / ShootTime - 0.5f * Physics.gravity * ShootTime;
-
-        var yvel = Body.velocity.y;
-
-        dir *= 1.0f - Random.Range(0.0f, Mathf.Abs(yvel) * 0.1f);
-
         Ball.SetActive(true);
         Ball.transform.position = startPos;
         Ball.GetComponent<Ball>().Owner = null;
@@ -1164,7 +1181,8 @@ public class Player : MonoBehaviour
 
         if (GameManager.Instance.Phase == GamePhase.InGame || GameManager.Instance.Phase == GamePhase.OutlinePass)
         {
-            if (State == PlayerState.Move && !IsAction)
+            if ((State == PlayerState.Move && !IsAction) ||
+                Ball.GetComponent<Ball>().TouchCount >= 1)
             {
                 //ball 소유하기
                 Ball.GetComponent<Ball>().Owner = gameObject;
@@ -1205,9 +1223,6 @@ public class Player : MonoBehaviour
 
                 Ball.GetComponent<Rigidbody>().velocity = inverseVel;
             }
-        }
-        else // Ball Getting - 처음 시작할 때 레프리 던지는 거 칠 때
-        {
         }
     }
 

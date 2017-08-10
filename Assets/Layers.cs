@@ -5,4 +5,5 @@ public enum Layers {
     IgnoreRaycast = 2,
     Water = 4,
     UI = 5,
+    Player = 8,
 }
