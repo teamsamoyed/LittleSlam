@@ -1117,7 +1117,7 @@ public class Player : MonoBehaviour
 
         if (Team == OwnTeam && Index == 0)
         {
-            //패스 대상
+            Ani.SetBool("Running", false);
             Ball.SetActive(false);
             Ball.GetComponent<Ball>().Owner = gameObject;
             transform.position = Pos;
