@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     public int[] Score = new int[2];
     public float TotalGameTime;
     public float RemainGameTime;
+    public float TimeOut = 30.0f;
     public GamePhase Phase
     {
         get
@@ -40,6 +41,8 @@ public class GameManager : MonoBehaviour
 
     public static GameManager Instance;
 
+    GameObject Ball;
+
 	// Use this for initialization
 	void Awake ()
     {
@@ -49,11 +52,35 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         RemainGameTime = TotalGameTime;
+        Ball = GameObject.FindGameObjectWithTag(Tags.Ball);
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
+        if (Ball.GetComponent<Ball>().Owner != null && TimeOut > 0.0f)
+        {
+            var owner = Ball.GetComponent<Ball>().Owner;
+            TimeOut -= Time.deltaTime;
+
+            if (TimeOut <= 0.0f)
+            {
+                var pos = owner.transform.position;
+
+                pos.y = 0.0f;
+
+                if (pos.z < 0.0f)
+                {
+                    pos.z = -Ball.GetComponent<Ball>().ZCut - 0.1f;
+                }
+                else
+                {
+                    pos.z = Ball.GetComponent<Ball>().ZCut +0.1f;
+                }
+                OutlinePass((owner.GetComponent<Player>().Team + 1) % 2, pos);
+            }
+        }
+
         if (Phase == GamePhase.BallGetting ||
             Phase == GamePhase.Wait)
             return;

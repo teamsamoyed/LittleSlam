@@ -461,7 +461,7 @@ public class Player : MonoBehaviour
 
         Vector3 CheckPosition = transform.position;
         Vector3 size = Collider.size * 0.5f;
-        CheckPosition.y += 0.5f;
+        CheckPosition.y += 0.35f;
         CheckPosition.x += Direction.x * size.x;
         CheckPosition.z += Direction.z * size.z;
 
@@ -472,7 +472,7 @@ public class Player : MonoBehaviour
                 return false;
         }
 
-        size.y = 0.45f;
+        size.y = 0.3f;
 
         var overlapped = Physics.OverlapBox(CheckPosition, size);
 
@@ -538,6 +538,9 @@ public class Player : MonoBehaviour
     {
         if(goal == null)
             goal = GetPassHandler();
+
+        if (goal == null)
+            return;
 
         PassGoal = goal;
 
@@ -1223,16 +1226,16 @@ public class Player : MonoBehaviour
         //적절히 근처 랜덤한 위치로 보내기
         if (Pos.z >= Ball.GetComponent<Ball>().ZCut)
         {
-            minX = transform.position.x - PasslineRange;
-            maxX = transform.position.x + PasslineRange;
+            minX = transform.position.x - PasslineRange * 0.5f;
+            maxX = transform.position.x + PasslineRange * 0.5f;
 
             minZ = Ball.GetComponent<Ball>().ZCut - PasslineRange;
             maxZ = Ball.GetComponent<Ball>().ZCut - 0.3f;
         }
         else if (Pos.z <= -Ball.GetComponent<Ball>().ZCut)
         {
-            minX = transform.position.x - PasslineRange;
-            maxX = transform.position.x + PasslineRange;
+            minX = transform.position.x - PasslineRange * 0.5f;
+            maxX = transform.position.x + PasslineRange * 0.5f;
 
             minZ = -Ball.GetComponent<Ball>().ZCut + 0.3f;
             maxZ = -Ball.GetComponent<Ball>().ZCut + PasslineRange;
