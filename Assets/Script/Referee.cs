@@ -72,7 +72,7 @@ public class Referee : MonoBehaviour
 
     IEnumerator BallGettingStart()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1.0f);
 
         GameManager.Instance.Phase = GamePhase.BallGetting;
     }

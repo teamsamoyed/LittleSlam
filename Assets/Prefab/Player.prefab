@@ -287,7 +287,8 @@ MonoBehaviour:
   Hp: 0
   Speed: 1
   Jump: 55
-  DunkDistance: 0.8
+  DunkDistance: 0.5
+  LayupDistance: 0.8
   DunkFrontPos: {x: -0.312, y: -0.34, z: 0.05}
   DunkBackPos: {x: -0.331, y: -0.347, z: -0.05}
   DunkLeftPos: {x: -0.354, y: -0.355, z: 0}

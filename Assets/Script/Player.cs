@@ -28,6 +28,7 @@ public class Player : MonoBehaviour
     public float Speed;
     public float Jump;
     public float DunkDistance;
+    public float LayupDistance;
     // goalpoint 기준 상대 좌표
     public Vector3 DunkFrontPos;
     public Vector3 DunkBackPos;
@@ -266,6 +267,9 @@ public class Player : MonoBehaviour
             case PlayerState.Dunk:
                 DunkControl();
                 break;
+            case PlayerState.Layup:
+                LayupControl();
+                break;
         }
     }
 
@@ -305,6 +309,10 @@ public class Player : MonoBehaviour
             if (distance < DunkDistance)
             {
                 DunkStart(goal);
+            }
+            else if (distance < LayupDistance)
+            {
+                LayupStart(goal);
             }
             else
             {
@@ -453,7 +461,7 @@ public class Player : MonoBehaviour
 
         Vector3 CheckPosition = transform.position;
         Vector3 size = Collider.size * 0.5f;
-        CheckPosition.y += 0.5f;
+        CheckPosition.y += 0.35f;
         CheckPosition.x += Direction.x * size.x;
         CheckPosition.z += Direction.z * size.z;
 
@@ -464,7 +472,7 @@ public class Player : MonoBehaviour
                 return false;
         }
 
-        size.y = 0.45f;
+        size.y = 0.3f;
 
         var overlapped = Physics.OverlapBox(CheckPosition, size);
 
@@ -530,6 +538,9 @@ public class Player : MonoBehaviour
     {
         if(goal == null)
             goal = GetPassHandler();
+
+        if (goal == null)
+            return;
 
         PassGoal = goal;
 
@@ -731,6 +742,25 @@ public class Player : MonoBehaviour
         }
     }
 
+    void LayupControl()
+    {
+        if (IsShootMotionEnded && 
+            WaitShootRelease &&
+            Body.velocity.y < 0.0f)
+        {
+            WaitShootRelease = false;
+            ShootImpulse();
+        }
+
+        if (!WaitShootRelease)
+        {
+            if (IsLanded)
+            {
+                State = PlayerState.Move;
+            }
+        }
+    }
+
     void ShootStart(GameObject goal)
     {
         var startPos = transform.position;
@@ -780,7 +810,6 @@ public class Player : MonoBehaviour
         State = PlayerState.Dunk;
         WaitShootRelease = true;
         IsShootMotionEnded = false;
-        Ani.SetTrigger("Dunk");
 
         Ani.SetBool("Front", false);
         Ani.SetBool("Back", false);
@@ -806,6 +835,39 @@ public class Player : MonoBehaviour
             if(Team == 1)
                 GetComponent<SpriteRenderer>().flipX = true;
         }
+
+        Ani.SetTrigger("Dunk");
+    }
+
+    void LayupStart(GameObject goal)
+    {
+        Ani.ResetTrigger("Layup");
+
+        State = PlayerState.Layup;
+        WaitShootRelease = true;
+        IsShootMotionEnded = false;
+
+        Ani.SetBool("Front", false);
+        Ani.SetBool("Back", false);
+        GetComponent<SpriteRenderer>().flipX = false;
+
+        float dx = goal.transform.position.x - transform.position.x;
+        float dz = goal.transform.position.z - transform.position.z;
+
+        if (dx < 0)
+            GetComponent<SpriteRenderer>().flipX = true;
+        else
+            GetComponent<SpriteRenderer>().flipX = false;
+
+        Body.velocity = new Vector3(dx, 0.0f, dz);
+        Body.AddForce(0.0f, Jump, 0.0f);
+
+        Ani.SetTrigger("Layup");
+    }
+
+    void LayupRelease()
+    {
+        IsShootMotionEnded = true;
     }
 
     void ReadyShoot()
@@ -1100,7 +1162,7 @@ public class Player : MonoBehaviour
             return;
         }
 
-        if (GameManager.Instance.Phase == GamePhase.InGame)
+        if (GameManager.Instance.Phase == GamePhase.InGame || GameManager.Instance.Phase == GamePhase.OutlinePass)
         {
             if (State == PlayerState.Move && !IsAction)
             {
@@ -1164,16 +1226,16 @@ public class Player : MonoBehaviour
         //적절히 근처 랜덤한 위치로 보내기
         if (Pos.z >= Ball.GetComponent<Ball>().ZCut)
         {
-            minX = transform.position.x - PasslineRange;
-            maxX = transform.position.x + PasslineRange;
+            minX = transform.position.x - PasslineRange * 0.5f;
+            maxX = transform.position.x + PasslineRange * 0.5f;
 
             minZ = Ball.GetComponent<Ball>().ZCut - PasslineRange;
             maxZ = Ball.GetComponent<Ball>().ZCut - 0.3f;
         }
         else if (Pos.z <= -Ball.GetComponent<Ball>().ZCut)
         {
-            minX = transform.position.x - PasslineRange;
-            maxX = transform.position.x + PasslineRange;
+            minX = transform.position.x - PasslineRange * 0.5f;
+            maxX = transform.position.x + PasslineRange * 0.5f;
 
             minZ = -Ball.GetComponent<Ball>().ZCut + 0.3f;
             maxZ = -Ball.GetComponent<Ball>().ZCut + PasslineRange;

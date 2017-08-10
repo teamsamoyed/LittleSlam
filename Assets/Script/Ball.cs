@@ -29,8 +29,10 @@ public class Ball : MonoBehaviour
             }
 
             if (prevOwner == null ||
-               (owner != null && prevOwner != null && owner.GetComponent<Player>().Team != prevOwner.GetComponent<Player>().Team))
+               (owner != null && prevOwner != null 
+               && owner.GetComponent<Player>().Team != prevOwner.GetComponent<Player>().Team))
             {
+                GameManager.Instance.TimeOut = 30.0f;
                 PlayerManager.InitAutoMove();
             }
             else
