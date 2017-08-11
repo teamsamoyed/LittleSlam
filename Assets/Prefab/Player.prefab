@@ -301,7 +301,8 @@ MonoBehaviour:
   MaxPassDegree: 60
   MinPassSpeed: 2
   ShootMaxHoldTime: 0.75
-  StealRange: 0.4
+  StealRange: 0.3
+  BlockRange: 0.5
   ShootX: 0.082
   ShootY: 0.422
   FrontShootX: -0.0276

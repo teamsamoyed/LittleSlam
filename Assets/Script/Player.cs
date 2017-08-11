@@ -52,6 +52,7 @@ public class Player : MonoBehaviour
     public float MinPassSpeed;
     public float ShootMaxHoldTime;
     public float StealRange;
+    public float BlockRange;
 
     public float ShootX;
     public float ShootY;
@@ -124,7 +125,7 @@ public class Player : MonoBehaviour
         Ani.SetBool("Landing", IsLanded);
         Ani.SetBool("OwnBall", Ball.GetComponent<Ball>().Owner == gameObject);
 
-        if (IsBlock && Body.velocity.y < 0.0f)
+        if (IsBlock && transform.position.y > 0.2f && Body.velocity.y < 0.0f)
         {
             Ani.SetTrigger("BlockEnd");
         }
@@ -200,6 +201,7 @@ public class Player : MonoBehaviour
     {
         if (Ball.transform.position.y  < transform.position.y + BlockHead)
         {
+            Ball.GetComponent<Ball>().TouchCount++;
             //아군 쪽으로 패스
             //인덱스 1 or 2로 보낸다.
             Source.PlayOneShot(BounceSound);
@@ -393,8 +395,12 @@ public class Player : MonoBehaviour
         {
             var dir = Ball.transform.position - transform.position;
             dir.y = 0.0f;
-            dir.Normalize();
-            dir *= 0.5f;
+
+            if (dir.magnitude > 0.5f)
+            {
+                dir.Normalize();
+                dir *= 0.5f;
+            }
 
             Body.velocity = new Vector3(dir.x, Body.velocity.y, dir.z);
         }
@@ -402,7 +408,6 @@ public class Player : MonoBehaviour
 
     void BlockEnd()
     {
-        IsBlock = false;
         IsBlockMotionEnded = true;
     }
 
@@ -415,7 +420,38 @@ public class Player : MonoBehaviour
             Ani.ResetTrigger("Block");
             Ani.ResetTrigger("BlockEnd");
             IsAction = false;
+            IsBlock = false;
             IsBlockMotionEnded = false;
+        }
+
+        if (GameManager.Instance.Phase == GamePhase.InGame && IsBlock)
+        {
+            if (Ball.GetComponent<Ball>().Owner == null &&
+                Ball.GetComponent<Ball>().TouchCount == 0)
+            {
+                var distance = Ball.transform.position - transform.position;
+
+                Debug.Log(distance.magnitude);
+                if (distance.magnitude < BlockRange)
+                {
+                    Source.PlayOneShot(BounceSound);
+                    //공을 날아오는 반대편으로 쳐낸다
+                    var vel = Ball.GetComponent<Rigidbody>().velocity;
+                    var inverseVel = new Vector3(-vel.x, 0.0f, -vel.z);
+
+                    if (GetComponent<SpriteRenderer>().flipX)
+                    {
+                        inverseVel.x -= BlockPower;
+                    }
+                    else
+                    {
+                        inverseVel.x += BlockPower;
+                    }
+
+                    Ball.GetComponent<Rigidbody>().velocity = inverseVel;
+                    IsBlock = false;
+                }
+            }
         }
     }
 
@@ -688,6 +724,7 @@ public class Player : MonoBehaviour
     {
         //최고점 찍음 - 이 때 내려온다
         if (WaitShootRelease && IsShootMotionEnded &&
+            transform.position.y > 0.2f &&
             Body.velocity.y < 0.0f)
         {
             Ani.SetTrigger("ShootEnd");
@@ -1222,6 +1259,7 @@ public class Player : MonoBehaviour
                 }
 
                 Ball.GetComponent<Rigidbody>().velocity = inverseVel;
+                IsBlock = false;
             }
         }
     }
