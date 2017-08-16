@@ -4,8 +4,8 @@ inspired by [Super Slam](https://namu.wiki/w/%EC%8A%88%ED%8D%BC%EC%8A%AC%EB%9E%A
 
 간단한 아케이드 농구 게임
 
-![screenshoot](/Screenshoot/main.jpg)  
-![screenshoot](/Screenshoot/s1.jpg)
+![screenshoot](Screenshot/main.jpg)  
+![screenshoot](Screenshot/s1.jpg)
 
 [동영상](https://www.youtube.com/watch?v=woKWWQ2Hn1g&feature=youtu.be)
 
