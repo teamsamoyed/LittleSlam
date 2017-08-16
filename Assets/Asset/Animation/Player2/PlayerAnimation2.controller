@@ -2839,19 +2839,19 @@ AnimatorStateMachine:
   - {fileID: 1109758314193035696}
   m_StateMachineTransitions:
     data:
-      first: {fileID: 1107261701433661560}
+      first: {fileID: 1107496427178650394}
       second: []
     data:
-      first: {fileID: 1107496427178650394}
+      first: {fileID: 1107825254899405984}
+      second: []
+    data:
+      first: {fileID: 1107261701433661560}
       second: []
     data:
       first: {fileID: 1107738679673947482}
       second: []
     data:
       first: {fileID: 1107772877349110952}
-      second: []
-    data:
-      first: {fileID: 1107825254899405984}
       second: []
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 348, y: 120, z: 0}

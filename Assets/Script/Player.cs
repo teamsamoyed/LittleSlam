@@ -125,7 +125,7 @@ public class Player : MonoBehaviour
         Ani.SetBool("Landing", IsLanded);
         Ani.SetBool("OwnBall", Ball.GetComponent<Ball>().Owner == gameObject);
 
-        if (IsBlock && transform.position.y > 0.2f && Body.velocity.y < 0.0f)
+        if (IsBlock && Body.velocity.y < 0.0f)
         {
             Ani.SetTrigger("BlockEnd");
         }
@@ -413,7 +413,7 @@ public class Player : MonoBehaviour
 
     void BlockControl()
     {
-        if (IsBlockMotionEnded && IsLanded)
+        if ((IsBlockMotionEnded || Body.velocity.y < 0.0f) && IsLanded)
         {
             State = PlayerState.Move;
 
@@ -450,6 +450,7 @@ public class Player : MonoBehaviour
 
                     Ball.GetComponent<Rigidbody>().velocity = inverseVel;
                     IsBlock = false;
+                    Ani.SetTrigger("BlockEnd");
                 }
             }
         }
