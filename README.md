@@ -4,6 +4,8 @@ inspired by [Super Slam](https://namu.wiki/w/%EC%8A%88%ED%8D%BC%EC%8A%AC%EB%9E%A
 
 간단한 아케이드 농구 게임
 
+[다운로드](https://github.com/jwvg0425/LittleSlam/releases/download/1.0/LittleSlam.zip)
+
 ![screenshoot](Screenshot/main.jpg)  
 ![screenshoot](Screenshot/s1.jpg)
 
