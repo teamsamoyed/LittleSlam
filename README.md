@@ -9,6 +9,13 @@ inspired by [Super Slam](https://namu.wiki/w/%EC%8A%88%ED%8D%BC%EC%8A%AC%EB%9E%A
 
 [동영상](https://www.youtube.com/watch?v=woKWWQ2Hn1g&feature=youtu.be)
 
+## 조작법
+
+- 1p : wasd 이동, f - 슛 or 블락, g - 패스 or 스틸.
+- 2p : ijkl 이동, ; - 슛 or 블락, ' - 패스 or 스틸.
+
+키 설정은 처음에 게임 실행 시 유니티 런쳐에서 변경 가능합니다.
+
 ## License
 
 게임 내에 사용된 모든 소스 코드 및 리소스는 상업적 용도를 포함하여 어떤 용도로든 아무런 제한 없이 자유롭게 사용/변형하셔도 됩니다.
