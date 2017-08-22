@@ -13,8 +13,8 @@ inspired by [Super Slam](https://namu.wiki/w/%EC%8A%88%ED%8D%BC%EC%8A%AC%EB%9E%A
 
 ## 조작법
 
-- 1p : wasd 이동, f - 슛 or 블락, g - 패스 or 스틸.
-- 2p : ijkl 이동, ; - 슛 or 블락, ' - 패스 or 스틸.
+- 1p : wasd 이동, q - 조작 캐릭터 변경, f - 슛 or 블락, g - 패스 or 스틸.
+- 2p : ijkl 이동, u - 조작 캐릭터 변경, ; - 슛 or 블락, ' - 패스 or 스틸.
 
 키 설정은 처음에 게임 실행 시 유니티 런쳐에서 변경 가능합니다.
 
